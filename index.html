@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CivicLens.</title>
+  <meta name="description" content="CivicLens empowers citizens to report civic issues, track resolutions, and demand accountability from local authorities through an interactive map-based platform." />
+  <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
+  <script type="module" crossorigin src="/Civiclens-vite/assets/main-CXw2WCwA.js"></script>
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-mIp-_pAd.js">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-CB6wSmYJ.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/main-Du8rjAd0.css">
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-brand">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="14" cy="14" r="8" stroke="#9FB3DF" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="2.5" fill="#9FB3DF"/>
+          <line x1="14" y1="1" x2="14" y2="8" stroke="#9FB3DF" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="20" x2="14" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+          <line x1="1" y1="14" x2="8" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+          <line x1="20" y1="14" x2="27" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        CivicLens<span class="dot">.</span>
+      </a>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="auth.html" class="btn btn-primary btn-sm" id="nav-cta">
+          Get Started
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO PARALLAX SECTION ═══ -->
+  <section class="hero-parallax" id="hero-parallax">
+
+    <!-- Hero Text Overlay -->
+    <div class="hero-text-container">
+      <div class="hero-text-content">
+        <span class="section-label" style="margin-bottom: 20px;">
+          <span class="live-dot"></span>
+          Design Thinking Project
+        </span>
+
+        <h1 class="text-gradient" id="hero-title">
+          Report Issues.<br/>Track Progress.<br/>Demand Action.
+        </h1>
+
+        <p class="hero-subtitle" id="hero-sub">
+          A real-time civic governance platform empowering citizens to map community issues and hold authorities accountable — transparently.
+        </p>
+
+        <div class="hero-buttons" id="hero-btns">
+          <a href="auth.html?mode=signup" class="btn btn-primary">
+            Report an Issue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#how-it-works" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            How it Works
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parallax Card Rows -->
+    <div class="parallax-perspective" id="parallax-cards">
+      <div class="parallax-row row-reverse" id="parallax-row-1">
+        <!-- JS will inject cards -->
+      </div>
+      <div class="parallax-row" id="parallax-row-2">
+        <!-- JS will inject cards -->
+      </div>
+      <div class="parallax-row row-reverse" id="parallax-row-3">
+        <!-- JS will inject cards -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══ STATS ═══ -->
+  <section class="stats-strip">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-value">
+          <span class="counter" data-target="100">0</span>%
+        </div>
+        <div class="stat-label">Transparency</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">
+          <span class="live-dot"></span> Live
+        </div>
+        <div class="stat-label">Map Updates</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Reporting Active</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW IT WORKS — Sticky Section Tabs ═══ -->
+  <div class="sticky-tabs" id="how-it-works">
+
+    <!-- Nav spacer (matches navbar height) -->
+    <div class="sticky-nav-spacer"></div>
+
+    <!-- Step 1: Report -->
+    <section class="sticky-section">
+      <div class="sticky-header">
+        <div class="sticky-header-content">
+          <div class="sticky-header-layout">
+            <span class="sticky-step-badge">01</span>
+            <h2 class="sticky-title"> Pin the Issue</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-body">
+        <div class="sticky-body-layout">
+          <div class="sticky-step-visual">
+            <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=700&h=450&fit=crop" alt="Indian city map view" loading="lazy" />
+          </div>
+          <div class="sticky-step-info">
+            <h3>Spot a problem? Drop a pin.</h3>
+            <p>Open the live map, tap on the exact location of the issue, and our geolocation engine tags precise GPS coordinates automatically. No address lookup needed — just point and report.</p>
+            <ul class="sticky-checklist">
+              <li><span class="check">✓</span> One-tap location pinning</li>
+              <li><span class="check">✓</span> Auto GPS coordinate capture</li>
+              <li><span class="check">✓</span> Works on mobile & desktop</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Evidence -->
+    <section class="sticky-section">
+      <div class="sticky-header">
+        <div class="sticky-header-content">
+          <div class="sticky-header-layout">
+            <span class="sticky-step-badge">02</span>
+            <h2 class="sticky-title"> Add Evidence</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-body">
+        <div class="sticky-body-layout">
+          <div class="sticky-step-visual">
+            <img src="/Civiclens-vite/civic-sense-in-india.jpg" alt="Civic evidence in India" loading="lazy" />
+          </div>
+          <div class="sticky-step-info">
+            <h3>Upload photos as proof.</h3>
+            <p>Attach images directly from your camera or gallery. Visual evidence helps authorities prioritize and understand the severity of the issue — no guessing, just clear proof.</p>
+            <ul class="sticky-checklist">
+              <li><span class="check">✓</span> Direct camera upload</li>
+              <li><span class="check">✓</span> Cloud-stored via Supabase</li>
+              <li><span class="check">✓</span> Before/after comparison ready</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 3: Track -->
+    <section class="sticky-section">
+      <div class="sticky-header">
+        <div class="sticky-header-content">
+          <div class="sticky-header-layout">
+            <span class="sticky-step-badge">03</span>
+            <h2 class="sticky-title"> Public Tracking</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-body">
+        <div class="sticky-body-layout">
+          <div class="sticky-step-visual">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&h=450&fit=crop" alt="Indian analytics dashboard" loading="lazy" />
+          </div>
+          <div class="sticky-step-info">
+            <h3>Watch your report progress live.</h3>
+            <p>Every complaint is publicly visible. Track your report as it moves from <span style="color:var(--warning);font-weight:700;">Pending</span> → <span style="color:var(--progress);font-weight:700;">In Progress</span> → <span style="color:var(--success);font-weight:700;">Resolved</span> in real-time on the dashboard.</p>
+            <ul class="sticky-checklist">
+              <li><span class="check">✓</span> Real-time status updates</li>
+              <li><span class="check">✓</span> Toast notifications on changes</li>
+              <li><span class="check">✓</span> Full public transparency</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 4: Verify -->
+    <section class="sticky-section">
+      <div class="sticky-header">
+        <div class="sticky-header-content">
+          <div class="sticky-header-layout">
+            <span class="sticky-step-badge">04</span>
+            <h2 class="sticky-title"> Verify & Resolve</h2>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-body">
+        <div class="sticky-body-layout">
+          <div class="sticky-step-visual">
+            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=700&h=450&fit=crop" alt="India Gate - civic resolution" loading="lazy" />
+          </div>
+          <div class="sticky-step-info">
+            <h3>You confirm the fix. No fake closures.</h3>
+            <p>When authorities claim the work is done, the ticket enters "Awaiting Confirmation." You personally verify the fix before the report can close — ensuring genuine accountability.</p>
+            <ul class="sticky-checklist">
+              <li><span class="check">✓</span> Citizen-verified resolution</li>
+              <li><span class="check">✓</span> Anti-fake-closure system</li>
+              <li><span class="check">✓</span> Complete audit trail</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══ FEATURES ═══ -->
+  <section class="features-section" id="features">
+    <div class="section-header reveal">
+      <span class="section-label">Platform</span>
+      <h2>Built for <span class="text-gradient">Real Impact</span></h2>
+      <p>Everything a civic-engaged citizen needs.</p>
+    </div>
+
+    <ul class="features-grid" id="features-grid">
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Interactive Live Map</h3>
+              <p>All reported issues displayed on a dark-themed interactive map with category-colored markers and cluster views.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Photo Evidence</h3>
+              <p>Upload images directly with your complaint. Visual proof speeds up authority response and accountability.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Real-time Notifications</h3>
+              <p>Get instant toast alerts when your complaint status changes. Stay informed without refreshing.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Admin Analytics</h3>
+              <p>Authority dashboard with charts showing complaint trends, category breakdowns, and resolution rates.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Secure Authentication</h3>
+              <p>Powered by Supabase Auth with role-based access. Citizens report, authorities resolve.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="glow-item reveal">
+        <div class="glow-wrapper">
+          <div class="glow-border"><div class="glow"></div></div>
+          <div class="feature-card">
+            <div class="feature-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg>
+            </div>
+            <div class="feature-text">
+              <h3>Issue Heatmap</h3>
+              <p>Toggle a heatmap layer to visualize problem density. Helps authorities prioritize high-impact zones.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- ═══ DATA FLOW DIAGRAM ═══ -->
+  <section class="dataflow-section" id="data-flow">
+    <div class="section-header reveal">
+      <span class="section-label">Architecture</span>
+      <h2>How Your Data <span class="text-gradient">Flows</span></h2>
+      <p>From citizen report to authority resolution — every step is transparent.</p>
+    </div>
+
+    <div class="dataflow-container reveal">
+      <div class="dataflow-widget">
+
+        <!-- SVG Paths with animated lights -->
+        <svg class="dataflow-svg" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+          <!-- Connection paths -->
+          <g stroke="currentColor" fill="none" stroke-width="0.4" stroke-dasharray="100 100" pathLength="100">
+            <path d="M 31 10 v 15 q 0 5 5 5 h 59 q 5 0 5 5 v 10" />
+            <path d="M 77 10 v 10 q 0 5 5 5 h 13 q 5 0 5 5 v 10" />
+            <path d="M 124 10 v 10 q 0 5 -5 5 h -14 q -5 0 -5 5 v 10" />
+            <path d="M 170 10 v 15 q 0 5 -5 5 h -60 q -5 0 -5 5 v 10" />
+            <animate attributeName="stroke-dashoffset" from="100" to="0" dur="1s" fill="freeze" calcMode="spline" keySplines="0.25,0.1,0.5,1" keyTimes="0; 1" />
+          </g>
+
+          <!-- Glowing light dots traveling along paths -->
+          <g mask="url(#df-mask-1)"><circle class="database db-light-1" cx="0" cy="0" r="12" fill="url(#df-glow-grad)" /></g>
+          <g mask="url(#df-mask-2)"><circle class="database db-light-2" cx="0" cy="0" r="12" fill="url(#df-glow-grad)" /></g>
+          <g mask="url(#df-mask-3)"><circle class="database db-light-3" cx="0" cy="0" r="12" fill="url(#df-glow-grad)" /></g>
+          <g mask="url(#df-mask-4)"><circle class="database db-light-4" cx="0" cy="0" r="12" fill="url(#df-glow-grad)" /></g>
+
+          <!-- Top badges -->
+          <g stroke="currentColor" fill="none" stroke-width="0.4">
+            <!-- Badge 1: Report -->
+            <g>
+              <rect fill="#111827" x="12" y="4" width="38" height="11" rx="5.5" />
+              <text x="21" y="11.5" fill="#9FB3DF" stroke="none" font-size="4" font-weight="600">Report</text>
+            </g>
+            <!-- Badge 2: Evidence -->
+            <g>
+              <rect fill="#111827" x="56" y="4" width="42" height="11" rx="5.5" />
+              <text x="64" y="11.5" fill="#9EC6F3" stroke="none" font-size="4" font-weight="600">Evidence</text>
+            </g>
+            <!-- Badge 3: Track -->
+            <g>
+              <rect fill="#111827" x="106" y="4" width="36" height="11" rx="5.5" />
+              <text x="115" y="11.5" fill="#BDDDE4" stroke="none" font-size="4" font-weight="600">Track</text>
+            </g>
+            <!-- Badge 4: Resolve -->
+            <g>
+              <rect fill="#111827" x="148" y="4" width="42" height="11" rx="5.5" />
+              <text x="157" y="11.5" fill="#10b981" stroke="none" font-size="4" font-weight="600">Resolve</text>
+            </g>
+          </g>
+
+          <!-- SVG Defs: masks and gradients -->
+          <defs>
+            <mask id="df-mask-1"><path d="M 31 10 v 15 q 0 5 5 5 h 59 q 5 0 5 5 v 25" stroke-width="0.5" stroke="white" /></mask>
+            <mask id="df-mask-2"><path d="M 77 10 v 10 q 0 5 5 5 h 13 q 5 0 5 5 v 25" stroke-width="0.5" stroke="white" /></mask>
+            <mask id="df-mask-3"><path d="M 124 10 v 10 q 0 5 -5 5 h -14 q -5 0 -5 5 v 25" stroke-width="0.5" stroke="white" /></mask>
+            <mask id="df-mask-4"><path d="M 170 10 v 15 q 0 5 -5 5 h -60 q -5 0 -5 5 v 25" stroke-width="0.5" stroke="white" /></mask>
+            <radialGradient id="df-glow-grad" fx="1">
+              <stop offset="0%" stop-color="#9EC6F3" />
+              <stop offset="100%" stop-color="transparent" />
+            </radialGradient>
+          </defs>
+        </svg>
+
+        <!-- Central platform box -->
+        <div class="dataflow-box">
+          <!-- Title floating above -->
+          <div class="dataflow-box-title">
+            <span></span>
+            <span>Real-time Civic Data Pipeline</span>
+          </div>
+
+          <!-- Inner content with pulsing circles -->
+          <div class="dataflow-box-inner">
+            <div class="pulse-circle pulse-1"></div>
+            <div class="pulse-circle pulse-2"></div>
+            <div class="pulse-circle pulse-3"></div>
+            <div class="pulse-circle pulse-4"></div>
+
+            <!-- Floating badges inside -->
+            <div class="dataflow-badge dataflow-badge-left">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <span>Citizen</span>
+            </div>
+            <div class="dataflow-badge dataflow-badge-right">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Authority</span>
+            </div>
+          </div>
+
+          <!-- Bottom shadow -->
+          <div class="dataflow-box-shadow"></div>
+
+          <!-- Circle label at bottom -->
+          <div class="dataflow-circle-label">🇮🇳</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="cta-section">
+    <div class="cta-content reveal">
+      <h2 class="text-gradient">Ready to Make a Difference?</h2>
+      <p>Join CivicLens and help build a more transparent, responsive city.</p>
+      <a href="auth.html?mode=signup" class="btn btn-primary">
+        Create Free Account
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">CivicLens<span style="color: var(--accent);">.</span></div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+      <div style="color: var(--text-dim); font-size: 0.8rem;">
+        © 2026 CivicLens — Created By Sarthak and Team
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

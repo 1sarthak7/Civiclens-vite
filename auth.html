@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — CivicLens</title>
+  <meta name="description" content="Sign in or create your CivicLens account to start reporting civic issues." />
+  <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
+  <script type="module" crossorigin src="/Civiclens-vite/assets/auth-Bhtr9xED.js"></script>
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-mIp-_pAd.js">
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/notifications-Bn99c0FS.js">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-CB6wSmYJ.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/auth-CkR_TXdw.css">
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <!-- ═══ LEFT: VISUAL ═══ -->
+    <div class="auth-visual">
+      <div class="auth-float-badge" style="top:18%; left:12%;"> Report submitted</div>
+      <div class="auth-float-badge" style="bottom:22%; right:8%;">Issue resolved</div>
+      <div class="auth-float-badge" style="bottom:12%; left:18%;"> Status updated</div>
+
+      <div class="auth-visual-content">
+        <div class="auth-visual-logo">
+          <svg viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+            <circle cx="14" cy="14" r="8" stroke="#9FB3DF" stroke-width="1.5"/>
+            <circle cx="14" cy="14" r="2.5" fill="#9FB3DF"/>
+            <line x1="14" y1="1" x2="14" y2="8" stroke="#9FB3DF" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          CivicLens<span style="color: var(--accent);">.</span>
+        </div>
+        <h2 class="text-gradient">Your City,<br/>Your Voice.</h2>
+        <p>Empowering citizens to report problems, track progress, and hold authorities accountable — transparently.</p>
+      </div>
+    </div>
+
+    <!-- ═══ RIGHT: FORM ═══ -->
+    <div class="auth-form-side">
+      <div class="auth-card">
+        <a href="index.html" class="auth-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to Home
+        </a>
+
+        <h2 id="auth-title">Welcome Back</h2>
+        <p class="subtitle" id="auth-subtitle">Enter your credentials to access CivicLens.</p>
+
+        <form class="auth-form" id="auth-form">
+          <div class="name-field-wrapper" id="name-wrapper">
+            <div class="field-group">
+              <label for="full-name">Full Name</label>
+              <div class="input-icon-wrapper">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input type="text" id="full-name" class="input-field" placeholder="Your full name" />
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="email">Email</label>
+            <div class="input-icon-wrapper">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+              <input type="email" id="email" class="input-field" placeholder="you@example.com" required />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="password">Password</label>
+            <div class="input-icon-wrapper">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              <input type="password" id="password" class="input-field" placeholder="Minimum 6 characters" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full" id="submit-btn" style="margin-top: 8px;">
+            <span id="btn-text">Sign In</span>
+            <svg id="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span id="btn-spinner" class="spinner hidden"></span>
+          </button>
+        </form>
+
+        <div class="auth-toggle">
+          <span id="toggle-msg">Don't have an account?</span>
+          <a id="toggle-btn">Create one</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

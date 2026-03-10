@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics — CivicLens</title>
+  <meta name="description" content="CivicLens Admin Analytics — View complaint trends, category breakdowns, and resolution rates." />
+  <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
+  <script type="module" crossorigin src="/Civiclens-vite/assets/admin-BkCwNDXk.js"></script>
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-mIp-_pAd.js">
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/notifications-Bn99c0FS.js">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-CB6wSmYJ.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/admin-CHDkGgZ2.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <!-- ═══ TOPBAR ═══ -->
+    <header class="admin-topbar">
+      <h1>📊 CivicLens <span>Analytics</span></h1>
+      <div class="admin-topbar-actions">
+        <a href="dashboard.html" class="btn btn-ghost btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to Dashboard
+        </a>
+        <button class="btn btn-danger btn-sm" id="logout-btn">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══ CONTENT ═══ -->
+    <div class="admin-content">
+
+      <!-- Stats -->
+      <div class="admin-stats" id="admin-stats">
+        <div class="admin-stat-card">
+          <div class="admin-stat-label">Total Reports</div>
+          <div class="admin-stat-value accent" id="total-reports">—</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-label">Pending</div>
+          <div class="admin-stat-value warning" id="total-pending">—</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-label">Resolved</div>
+          <div class="admin-stat-value success" id="total-resolved">—</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-label">Resolution Rate</div>
+          <div class="admin-stat-value accent" id="resolution-rate">—</div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>📊 Complaints by Category</h3>
+          <div class="chart-wrapper">
+            <canvas id="category-chart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>📈 Status Distribution</h3>
+          <div class="chart-wrapper">
+            <canvas id="status-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Complaints Table -->
+      <div class="recent-section">
+        <h3>🕐 Recent Complaints</h3>
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recent-tbody">
+            <tr><td colspan="4" style="text-align:center; color:var(--text-dim); padding:40px;">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
