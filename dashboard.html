@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — CivicLens</title>
+  <meta name="description" content="CivicLens Dashboard — View, report, and track civic issues on an interactive map." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/src/css/global.css" />
+  <link rel="stylesheet" href="/src/css/dashboard.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+        <h2>CivicLens<span>.</span></h2>
+      </div>
+
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-details">
+          <h3 id="user-name">Loading...</h3>
+          <span class="user-role" id="user-role">Citizen</span>
+        </div>
+      </div>
+
+      <div class="sidebar-stats">
+        <div class="mini-stat">
+          <span class="mini-stat-value pending" id="stat-pending">0</span>
+          <span class="mini-stat-label">Pending</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-value progress" id="stat-progress">0</span>
+          <span class="mini-stat-label">In Progress</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-value resolved" id="stat-resolved">0</span>
+          <span class="mini-stat-label">Resolved</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-value" id="stat-credits" style="color: var(--accent);">0</span>
+          <span class="mini-stat-label">Credits</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="nav-item active" data-filter="default">
+            <a><span class="nav-icon">🏠</span> Dashboard</a>
+          </li>
+          <li class="nav-item" data-filter="mine">
+            <a><span class="nav-icon">📂</span> My Reports</a>
+          </li>
+          <li class="nav-item hidden" id="nav-admin" data-filter="all">
+            <a><span class="nav-icon">📊</span> Dept. Overview</a>
+          </li>
+          <li class="nav-item hidden" id="nav-analytics">
+            <a href="admin.html"><span class="nav-icon">📈</span> Analytics</a>
+          </li>
+          <li class="nav-item">
+            <a href="rewards.html"><span class="nav-icon">🎁</span> Rewards</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-feed-title">Recent Updates</div>
+      <div class="sidebar-feed" id="complaints-list">
+        <div class="feed-loading">Loading updates...</div>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="index.html" class="btn btn-ghost btn-sm" style="flex:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        </a>
+        <button class="btn btn-danger btn-sm" id="logout-btn" style="flex:1;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ═══ MAP AREA ═══ -->
+    <main class="map-area">
+
+      <div class="map-controls">
+        <!-- Animated Search Bar -->
+        <div class="search-wrapper" id="search-wrapper">
+          <div class="search-bar" id="search-bar">
+            <button class="search-icon-btn" id="search-toggle" aria-label="Search location">
+              <svg width="16" height="16" viewBox="0 0 15 15" fill="currentColor"><path d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+            </button>
+            <input type="text" class="search-input" id="search-input" placeholder="Search location..." aria-label="Search location" />
+            <div class="search-spinner hidden" id="search-spinner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+          </div>
+          <div class="search-results" id="search-results"></div>
+        </div>
+
+        <button class="map-btn" id="locate-btn">
+          📍 My Location
+        </button>
+        <button class="map-btn" id="heatmap-btn">
+          🌡️ Heatmap
+        </button>
+      </div>
+
+      <div id="map"></div>
+
+      <!-- Report Form (hidden by default) -->
+      <div class="report-overlay hidden" id="report-form-container">
+        <h3>📍 Report Issue</h3>
+        <p class="coords" id="coords-display">Lat: —, Lng: —</p>
+
+        <form class="report-form" id="complaint-form">
+          <label for="category">Category</label>
+          <select id="category" class="input-field" required>
+            <option value="Roads">🚧 Pothole / Road Damage</option>
+            <option value="Garbage">🗑️ Garbage / Sanitation</option>
+            <option value="Water">💧 Water Leakage</option>
+            <option value="Streetlight">💡 Broken Streetlight</option>
+            <option value="Drainage">🌊 Drainage / Flooding</option>
+            <option value="Other">📋 Other</option>
+          </select>
+
+          <label for="desc">Description</label>
+          <textarea id="desc" class="input-field" placeholder="Describe the issue..." rows="3" required></textarea>
+
+          <label>Photo Evidence (Optional)</label>
+          <div class="upload-area" id="upload-area">
+            <span>📷 Click or drag to upload</span>
+            <input type="file" id="image-input" accept="image/*" />
+          </div>
+          <img class="upload-preview" id="image-preview" alt="Preview" />
+
+          <div class="report-form-buttons">
+            <button type="submit" class="btn btn-primary btn-sm" id="report-submit-btn">
+              <span id="report-btn-text">Submit</span>
+              <span id="report-spinner" class="spinner hidden"></span>
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="report-cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script type="module" src="/src/js/dashboard.js"></script>
+</body>
+</html>
