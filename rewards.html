@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rewards — CivicLens</title>
+  <meta name="description" content="Earn credits by reporting civic issues and redeem them for government amenities." />
+  <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
+  <script type="module" crossorigin src="/Civiclens-vite/assets/rewards-yVvJVsmp.js"></script>
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-AF_0RKjy.js">
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/notifications-RDF-kLLZ.js">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-BmJuHmIp.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/rewards-6nHXv9LE.css">
+</head>
+<body>
+
+  <div class="rewards-layout">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <header class="rewards-header">
+      <div class="rewards-header-left">
+        <a href="dashboard.html" class="back-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to Dashboard
+        </a>
+      </div>
+      <div class="rewards-header-center">
+        <h1>CivicLens<span>.</span> Rewards</h1>
+      </div>
+      <div class="rewards-header-right">
+        <div class="user-pill" id="user-pill">
+          <span class="user-pill-avatar" id="rw-avatar">?</span>
+          <span id="rw-name">User</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="rewards-main">
+
+      <!-- ═══ ADMIN VIEW (hidden by default, shown for authorities) ═══ -->
+      <div class="admin-rewards-view hidden" id="admin-rewards-view">
+
+        <!-- Admin Hero -->
+        <section class="admin-hero">
+          <div class="admin-hero-inner">
+            <div class="credit-icon">
+              <svg class="reward-svg reward-svg--settings" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="24" cy="24" r="8" class="svg-gear-center"/>
+                <path d="M24 4v6M24 38v6M42.4 13l-5.2 3M10.8 32l-5.2 3M42.4 35l-5.2-3M10.8 16l-5.2-3" class="svg-gear-teeth"/>
+              </svg>
+            </div>
+            <div class="credit-info">
+              <span class="credit-label">Admin Panel</span>
+              <span class="credit-value" style="font-size: 2rem; letter-spacing: -1px;">Reward Settings</span>
+              <span class="credit-subtext">Configure credits and manage user balances</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Credit Configuration -->
+        <section class="rewards-section">
+          <h2 class="section-title">Credit Configuration</h2>
+          <p class="section-desc">Set how many credits are awarded per resolved complaint</p>
+
+          <div class="admin-config-card">
+            <div class="config-row">
+              <div class="config-field">
+                <label for="credits-per-resolved">Credits per Resolved Complaint</label>
+                <div class="config-input-group">
+                  <input type="number" id="credits-per-resolved" class="config-input" min="1" max="1000" value="50" />
+                  <button class="btn btn-primary btn-sm" id="save-config-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save
+                  </button>
+                </div>
+              </div>
+              <div class="config-preview">
+                <span class="config-preview-label">Current Value</span>
+                <span class="config-preview-value" id="current-config-value">50</span>
+                <span class="config-preview-label">credits</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- User Credits Overview -->
+        <section class="rewards-section">
+          <h2 class="section-title">User Credits Overview</h2>
+          <p class="section-desc">All users and their current credit balances</p>
+
+          <div class="admin-users-wrapper">
+            <div class="admin-users-loading" id="admin-users-loading">Loading users...</div>
+            <table class="admin-users-table hidden" id="admin-users-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Credits</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ═══ CITIZEN VIEW ═══ -->
+      <div class="citizen-rewards-view" id="citizen-rewards-view">
+
+        <!-- Credit Balance Hero -->
+        <section class="credit-hero">
+          <div class="credit-hero-inner">
+            <div class="credit-icon">
+              <svg class="reward-svg reward-svg--credit" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="24" cy="24" r="18" class="svg-coin"/>
+                <circle cx="24" cy="24" r="14" class="svg-coin-inner" opacity="0.3"/>
+                <path d="M20 18h8a4 4 0 010 8h-8v-8zm0 8h8a4 4 0 010 8h-8" class="svg-symbol" stroke-width="2.5"/>
+                <line x1="18" y1="16" x2="18" y2="34" class="svg-symbol-line" stroke-width="2.5"/>
+              </svg>
+            </div>
+            <div class="credit-info">
+              <span class="credit-label">Your Credit Balance</span>
+              <span class="credit-value" id="credit-balance">0</span>
+              <span class="credit-subtext" id="credit-subtext">Earn 50 credits per resolved complaint</span>
+            </div>
+          </div>
+          <div class="credit-stats">
+            <div class="cs-item">
+              <span class="cs-value" id="total-earned">0</span>
+              <span class="cs-label">Total Earned</span>
+            </div>
+            <div class="cs-item">
+              <span class="cs-value" id="total-redeemed">0</span>
+              <span class="cs-label">Redeemed</span>
+            </div>
+            <div class="cs-item">
+              <span class="cs-value" id="total-complaints">0</span>
+              <span class="cs-label">Resolved Issues</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Available Rewards -->
+        <section class="rewards-section">
+          <h2 class="section-title">Available Rewards</h2>
+          <p class="section-desc">Redeem your credits for government amenities and discounts</p>
+
+          <div class="rewards-grid" id="rewards-grid">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- Redemption History -->
+        <section class="rewards-section">
+          <h2 class="section-title">Redemption History</h2>
+          <div class="history-table-wrapper" id="history-wrapper">
+            <div class="history-empty" id="history-empty">
+              <div class="history-empty-icon">
+                <svg class="reward-svg reward-svg--gift" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="18" width="36" height="24" rx="3" class="svg-box"/>
+                  <rect x="4" y="12" width="40" height="8" rx="3" class="svg-lid"/>
+                  <line x1="24" y1="12" x2="24" y2="42" class="svg-ribbon-v"/>
+                  <path d="M24 12c0 0-4-8-10-8s-4 8 0 8" class="svg-bow svg-bow--left"/>
+                  <path d="M24 12c0 0 4-8 10-8s4 8 0 8" class="svg-bow svg-bow--right"/>
+                </svg>
+              </div>
+              <p>No redemptions yet. Start earning credits by reporting civic issues!</p>
+            </div>
+            <table class="history-table hidden" id="history-table">
+              <thead>
+                <tr>
+                  <th>Reward</th>
+                  <th>Credits</th>
+                  <th>Coupon Code</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="history-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Redemption Success Modal -->
+  <div class="modal-overlay hidden" id="redeem-modal">
+    <div class="modal-card">
+      <div class="modal-icon">
+        <svg class="reward-svg reward-svg--celebrate" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 42L18 16l14 14L8 42z" class="svg-cone"/>
+          <circle cx="30" cy="10" r="2" class="svg-star svg-star--1"/>
+          <circle cx="38" cy="18" r="1.5" class="svg-star svg-star--2"/>
+          <circle cx="22" cy="8" r="1.5" class="svg-star svg-star--3"/>
+          <circle cx="40" cy="8" r="1" class="svg-star svg-star--4"/>
+          <path d="M34 4l1 3 3-1-1 3 3 1-3 1 1 3-3-1-1 3-1-3-3 1 1-3-3-1 3-1-1-3 3 1z" class="svg-sparkle"/>
+          <line x1="18" y1="16" x2="14" y2="10" class="svg-confetti svg-confetti--1"/>
+          <line x1="20" y1="18" x2="24" y2="8" class="svg-confetti svg-confetti--2"/>
+          <line x1="22" y1="22" x2="32" y2="14" class="svg-confetti svg-confetti--3"/>
+        </svg>
+      </div>
+      <h3>Reward Redeemed!</h3>
+      <p class="modal-reward-name" id="modal-reward-name"></p>
+      <div class="coupon-box">
+        <span class="coupon-label">Your Coupon Code</span>
+        <span class="coupon-code" id="modal-coupon-code"></span>
+      </div>
+      <p class="modal-note">Present this code at the respective government counter or enter it in the official app.</p>
+      <button class="btn btn-primary" id="modal-close-btn">Done</button>
+    </div>
+  </div>
+
+</body>
+</html>
