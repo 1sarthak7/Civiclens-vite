@@ -7,11 +7,11 @@
   <meta name="description" content="CivicLens Dashboard — View, report, and track civic issues on an interactive map." />
   <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script type="module" crossorigin src="/Civiclens-vite/assets/dashboard-DtQrdC7Q.js"></script>
+  <script type="module" crossorigin src="/Civiclens-vite/assets/dashboard-CweSyAxw.js"></script>
   <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-AF_0RKjy.js">
   <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/notifications-Bn99c0FS.js">
   <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-BmJuHmIp.css">
-  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/dashboard-3LGvyiV0.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/dashboard-BU-xjC4H.css">
 </head>
 <body>
 
@@ -85,6 +85,20 @@
     <main class="map-area">
 
       <div class="map-controls">
+        <!-- Animated Search Bar -->
+        <div class="search-wrapper" id="search-wrapper">
+          <div class="search-bar" id="search-bar">
+            <button class="search-icon-btn" id="search-toggle" aria-label="Search location">
+              <svg width="16" height="16" viewBox="0 0 15 15" fill="currentColor"><path d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+            </button>
+            <input type="text" class="search-input" id="search-input" placeholder="Search location..." aria-label="Search location" />
+            <div class="search-spinner hidden" id="search-spinner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+          </div>
+          <div class="search-results" id="search-results"></div>
+        </div>
+
         <button class="map-btn" id="locate-btn">
           📍 My Location
         </button>
