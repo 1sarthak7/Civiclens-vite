@@ -1,222 +1,106 @@
-// ═══════════════════════════════════════════════════════════
-// CIVIC LENS — Landing Page with Parallax Hero
-// Aceternity-style 3D parallax card rows using GSAP
-// ═══════════════════════════════════════════════════════════
+// ===============================================================
+// CIVIC LENS — Landing Page (Government Style)
+// Clean, simple interactions — vanilla JS, no GSAP
+// ===============================================================
 
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// --- Set current date in top bar ---
+const dateEl = document.getElementById('current-date');
+if (dateEl) {
+  const now = new Date();
+  dateEl.textContent = now.toLocaleDateString('en-IN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
 
-gsap.registerPlugin(ScrollTrigger);
-
-// ─── Parallax showcase data ───
-// Civic infrastructure + governance themed images (Unsplash)
-const showcaseItems = [
-  // Row 1 (5 items) — Indian civic issues & cities
-  {
-    title: 'Pothole on Indian Road',
-    badge: 'issue',
-    thumbnail: `${import.meta.env.BASE_URL}2017_5$largeimg15_Monday_2017_015927112.jpg`,
-  },
-  {
-    title: 'Mumbai Cityscape',
-    badge: 'feature',
-    thumbnail: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Broken Indian Streetlight',
-    badge: 'issue',
-    thumbnail: 'https://images.unsplash.com/photo-1760782063883-83af1fc0fc83?q=80&w=991&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    title: 'Smart City Dashboard',
-    badge: 'feature',
-    thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Indian Road Construction',
-    badge: 'progress',
-    thumbnail: 'https://images.unsplash.com/photo-1621929747188-0b4dc28498d2?w=800&h=600&fit=crop',
-  },
-  // Row 2 (5 items) — Indian governance & infrastructure
-  {
-    title: 'Civic Sense in India',
-    badge: 'resolved',
-    thumbnail: `${import.meta.env.BASE_URL}civic-sense-in-india.jpg`,
-  },
-  {
-    title: 'Water Pipeline Repair',
-    badge: 'progress',
-    thumbnail: 'https://images.unsplash.com/photo-1693907986952-3cd372e4c9d8?q=80&w=2487&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    title: 'Delhi Urban Planning',
-    badge: 'feature',
-    thumbnail: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Indian Street Flooding',
-    badge: 'issue',
-    thumbnail: 'https://images.unsplash.com/photo-1561631918-0e0d6af260af?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Community Governance',
-    badge: 'resolved',
-    thumbnail: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&h=600&fit=crop',
-  },
-  // Row 3 (5 items) — Indian cities & resolution
-  {
-    title: 'Indian Park Renovation',
-    badge: 'resolved',
-    thumbnail: 'https://images.unsplash.com/photo-1532664189809-02133fee698d?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Indian City Traffic',
-    badge: 'feature',
-    thumbnail: 'https://images.unsplash.com/photo-1711358876889-ed28e5594e2f?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    title: 'Indian Sidewalk Issues',
-    badge: 'issue',
-    thumbnail: 'https://images.unsplash.com/photo-1695834195972-9fd5877b8ad0?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    title: 'Jaipur Smart City',
-    badge: 'resolved',
-    thumbnail: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&h=600&fit=crop',
-  },
-  {
-    title: 'Indian City Analytics',
-    badge: 'feature',
-    thumbnail: 'https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&h=600&fit=crop',
-  },
-];
-
-const badgeLabels = {
-  issue: '⚠ Issue',
-  resolved: '✓ Resolved',
-  progress: '↻ In Progress',
-  feature: '★ Feature',
+// --- Font size controls ---
+const fontBtns = {
+  decrease: document.getElementById('font-decrease'),
+  default: document.getElementById('font-default'),
+  increase: document.getElementById('font-increase'),
 };
 
-// ─── Build parallax card HTML ───
-function createCard(item) {
-  const card = document.createElement('div');
-  card.className = 'parallax-card';
-  card.innerHTML = `
-    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy" />
-    <div class="card-overlay"></div>
-    <span class="card-badge ${item.badge}">${badgeLabels[item.badge]}</span>
-    <div class="card-title">${item.title}</div>
-  `;
-  return card;
+let currentFontSize = 100;
+const FONT_STEP = 10;
+const FONT_MIN = 80;
+const FONT_MAX = 130;
+
+if (fontBtns.decrease) {
+  fontBtns.decrease.addEventListener('click', () => {
+    currentFontSize = Math.max(FONT_MIN, currentFontSize - FONT_STEP);
+    document.documentElement.style.fontSize = currentFontSize + '%';
+  });
+}
+if (fontBtns.default) {
+  fontBtns.default.addEventListener('click', () => {
+    currentFontSize = 100;
+    document.documentElement.style.fontSize = '100%';
+  });
+}
+if (fontBtns.increase) {
+  fontBtns.increase.addEventListener('click', () => {
+    currentFontSize = Math.min(FONT_MAX, currentFontSize + FONT_STEP);
+    document.documentElement.style.fontSize = currentFontSize + '%';
+  });
 }
 
-// ─── Inject cards into rows ───
-function populateRows() {
-  const row1 = document.getElementById('parallax-row-1');
-  const row2 = document.getElementById('parallax-row-2');
-  const row3 = document.getElementById('parallax-row-3');
+// --- Mobile menu toggle ---
+const menuToggle = document.getElementById('mobile-menu-toggle');
+const navMenu = document.getElementById('navbar-nav');
 
-  showcaseItems.slice(0, 5).forEach(item => row1.appendChild(createCard(item)));
-  showcaseItems.slice(5, 10).forEach(item => row2.appendChild(createCard(item)));
-  showcaseItems.slice(10, 15).forEach(item => row3.appendChild(createCard(item)));
+if (menuToggle && navMenu) {
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    navMenu.classList.toggle('open');
+  });
+
+  navMenu.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      menuToggle.classList.remove('active');
+      navMenu.classList.remove('open');
+    });
+  });
 }
 
-populateRows();
-
-// ─── Navbar scroll morph ───
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
+// --- Smooth scroll for anchor links ---
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener('click', function (e) {
+    const targetId = this.getAttribute('href');
+    if (targetId === '#') return;
+    const targetEl = document.querySelector(targetId);
+    if (targetEl) {
+      e.preventDefault();
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 });
 
-// ─── GSAP Hero Text Entrance ───
-const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+// --- Active nav link highlighting on scroll ---
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
 
-heroTl
-  .from('#hero-title', { y: 60, opacity: 0, duration: 1, delay: 0.3 })
-  .from('#hero-sub', { y: 40, opacity: 0, duration: 0.8 }, '-=0.5')
-  .from('#hero-btns', { y: 30, opacity: 0, duration: 0.6 }, '-=0.4');
+function updateActiveNav() {
+  const scrollPos = window.scrollY + 120;
+  sections.forEach((section) => {
+    const top = section.offsetTop;
+    const height = section.offsetHeight;
+    const id = section.getAttribute('id');
+    if (scrollPos >= top && scrollPos < top + height) {
+      navLinks.forEach((link) => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + id) {
+          link.classList.add('active');
+        }
+      });
+    }
+  });
+}
 
-// ─── GSAP Parallax Scroll Animation ───
-// This recreates the Aceternity parallax effect:
-// - Cards start with 3D rotation (rotateX + rotateZ)
-// - On scroll, rotation goes to 0
-// - Rows translate horizontally in alternating directions
-// - Opacity fades in
+window.addEventListener('scroll', updateActiveNav, { passive: true });
 
-const parallaxSection = document.getElementById('hero-parallax');
-const parallaxCards = document.getElementById('parallax-cards');
-
-// 3D perspective + rotation animation
-gsap.fromTo(parallaxCards,
-  {
-    rotateX: 15,
-    rotateZ: 10,
-    translateY: -200,
-    opacity: 0.3,
-  },
-  {
-    rotateX: 0,
-    rotateZ: 0,
-    translateY: 200,
-    opacity: 1,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection,
-      start: 'top top',
-      end: '40% top',
-      scrub: 1,
-    },
-  }
-);
-
-// Row 1: translate right on scroll
-gsap.fromTo('#parallax-row-1',
-  { x: 0 },
-  {
-    x: 400,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 1,
-    },
-  }
-);
-
-// Row 2: translate left on scroll
-gsap.fromTo('#parallax-row-2',
-  { x: 0 },
-  {
-    x: -400,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 1,
-    },
-  }
-);
-
-// Row 3: translate right on scroll
-gsap.fromTo('#parallax-row-3',
-  { x: 0 },
-  {
-    x: 400,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 1,
-    },
-  }
-);
-
-// ─── Scroll Reveal (IntersectionObserver) ───
+// --- Scroll Reveal (IntersectionObserver) ---
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -230,7 +114,24 @@ const revealObserver = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-// ─── Counter Animation ───
+// --- Counter Animation ---
+function animateCounter(el, target, duration = 2000) {
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(target * eased);
+    el.textContent = current.toLocaleString('en-IN');
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      el.textContent = target.toLocaleString('en-IN');
+    }
+  }
+  requestAnimationFrame(update);
+}
+
 const counterObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -238,177 +139,158 @@ const counterObserver = new IntersectionObserver(
         const counters = entry.target.querySelectorAll('.counter');
         counters.forEach((counter) => {
           const target = parseInt(counter.dataset.target, 10);
-          gsap.to(counter, {
-            innerText: target,
-            duration: 2,
-            snap: { innerText: 1 },
-            ease: 'power2.out',
-          });
+          animateCounter(counter, target);
         });
         counterObserver.unobserve(entry.target);
       }
     });
   },
-  { threshold: 0.5 }
+  { threshold: 0.3 }
 );
 
-const statsSection = document.querySelector('.stats-strip');
+const statsSection = document.querySelector('.statistics-section');
 if (statsSection) counterObserver.observe(statsSection);
 
-// ─── GSAP ScrollTrigger for sticky section content ───
-gsap.utils.toArray('.sticky-body-layout').forEach((layout) => {
-  gsap.from(layout, {
-    scrollTrigger: {
-      trigger: layout,
-      start: 'top 80%',
-      toggleActions: 'play none none none',
-    },
-    y: 50,
-    opacity: 0,
-    duration: 0.9,
-    ease: 'power3.out',
-  });
-});
-
-// ─── Glowing Effect: Mouse-tracking border glow ───
-// Adapted from Aceternity GlowingEffect component
-(function initGlowingEffect() {
-  const PROXIMITY = 64;
-  const INACTIVE_ZONE = 0.01;
-  const glowBorders = document.querySelectorAll('.glow-border');
-
-  function handlePointerMove(e) {
-    glowBorders.forEach((el) => {
-      const { left, top, width, height } = el.getBoundingClientRect();
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-
-      const centerX = left + width * 0.5;
-      const centerY = top + height * 0.5;
-
-      // Check proximity
-      const isActive =
-        mouseX > left - PROXIMITY &&
-        mouseX < left + width + PROXIMITY &&
-        mouseY > top - PROXIMITY &&
-        mouseY < top + height + PROXIMITY;
-
-      // Check inactive zone (very center)
-      const distFromCenter = Math.hypot(mouseX - centerX, mouseY - centerY);
-      const inactiveRadius = 0.5 * Math.min(width, height) * INACTIVE_ZONE;
-
-      if (distFromCenter < inactiveRadius) {
-        el.style.setProperty('--active', '0');
-        return;
-      }
-
-      el.style.setProperty('--active', isActive ? '1' : '0');
-
-      if (!isActive) return;
-
-      // Calculate angle from center to cursor
-      const angle =
-        (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
-
-      el.style.setProperty('--start', String(angle));
-    });
-  }
-
-  document.body.addEventListener('pointermove', handlePointerMove, { passive: true });
-
-  // Also update on scroll (recalcs positions)
+// --- Navbar shadow on scroll ---
+const navbar = document.getElementById('navbar');
+if (navbar) {
   window.addEventListener('scroll', () => {
-    const lastEvent = { clientX: 0, clientY: 0 };
-    handlePointerMove(lastEvent);
+    if (window.scrollY > 10) {
+      navbar.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)';
+    } else {
+      navbar.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+    }
   }, { passive: true });
-})();
+}
 
-// ─── SCROLL-ANIMATED EXPANDING IMAGE (adapted from HeroScrollVideo) ───
-(function initScrollExpand() {
-  const headline = document.getElementById('hsv-headline');
-  const scrollTriggerEl = document.getElementById('hsv-scroll-trigger');
-  const mediaBox = document.getElementById('hsv-media-box');
-  const darken = document.getElementById('hsv-darken');
-  const overlay = document.getElementById('hsv-overlay');
-  const caption = document.getElementById('hsv-caption');
-  const content = document.getElementById('hsv-overlay-content');
+// ===============================================================
+// SNAPSHOTS CAROUSEL
+// Horizontal scrollable carousel with arrow nav + dot indicators
+// ===============================================================
+(function initCarousel() {
+  const track = document.getElementById('snap-track');
+  const viewport = document.getElementById('snap-viewport');
+  const prevBtn = document.getElementById('snap-prev');
+  const nextBtn = document.getElementById('snap-next');
+  const dotsContainer = document.getElementById('snap-dots');
 
-  if (!scrollTriggerEl || !mediaBox) return;
+  if (!track || !viewport || !prevBtn || !nextBtn || !dotsContainer) return;
 
-  // Headline roll-away on scroll
-  if (headline) {
-    const headlineChildren = headline.querySelectorAll('.hsv-headline > *');
-    const heroExitTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: headline,
-        start: 'top top',
-        end: 'top+=400 top',
-        scrub: 1,
-      },
-    });
+  const slides = track.querySelectorAll('.carousel-slide');
+  const slideCount = slides.length;
+  let currentIndex = 0;
+  let slideWidth = 0;
+  let gap = 20;
+  let visibleSlides = 1;
 
-    headlineChildren.forEach((el, i) => {
-      heroExitTl.to(
-        el,
-        {
-          rotationX: 80,
-          y: -36,
-          scale: 0.86,
-          opacity: 0,
-          filter: 'blur(4px)',
-          transformOrigin: 'center top',
-          ease: 'power3.inOut',
-        },
-        i * 0.08
-      );
+  function calcDimensions() {
+    if (slides.length === 0) return;
+    slideWidth = slides[0].offsetWidth;
+    gap = parseFloat(getComputedStyle(track).gap) || 20;
+    const vpWidth = viewport.offsetWidth;
+    visibleSlides = Math.floor(vpWidth / (slideWidth + gap));
+    if (visibleSlides < 1) visibleSlides = 1;
+  }
+
+  function maxIndex() {
+    return Math.max(0, slideCount - visibleSlides);
+  }
+
+  function updatePosition() {
+    const offset = currentIndex * (slideWidth + gap);
+    track.style.transform = `translateX(-${offset}px)`;
+  }
+
+  function updateButtons() {
+    prevBtn.disabled = currentIndex <= 0;
+    nextBtn.disabled = currentIndex >= maxIndex();
+  }
+
+  function buildDots() {
+    dotsContainer.innerHTML = '';
+    const dotCount = maxIndex() + 1;
+    for (let i = 0; i < dotCount; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  function updateDots() {
+    const dots = dotsContainer.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
     });
   }
 
-  // Main expansion timeline
-  const mainTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: scrollTriggerEl,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 1.1,
-    },
+  function goTo(index) {
+    currentIndex = Math.max(0, Math.min(index, maxIndex()));
+    updatePosition();
+    updateButtons();
+    updateDots();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+
+  // Drag/swipe support
+  let isDragging = false;
+  let startX = 0;
+  let startTranslate = 0;
+
+  function getTranslateX() {
+    const style = getComputedStyle(track);
+    const matrix = new DOMMatrix(style.transform);
+    return matrix.m41;
+  }
+
+  viewport.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX;
+    startTranslate = getTranslateX();
+    track.style.transition = 'none';
+    viewport.setPointerCapture(e.pointerId);
   });
 
-  // Set initial state
-  gsap.set(mediaBox, {
-    width: 340,
-    height: 340,
-    borderRadius: 20,
+  viewport.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    track.style.transform = `translateX(${startTranslate + dx}px)`;
   });
-  gsap.set(overlay, { clipPath: 'inset(100% 0 0 0)' });
-  gsap.set(content, { filter: 'blur(10px)', scale: 1.05, y: 30 });
-  gsap.set(caption, { y: 30 });
 
-  // Animate: expand box → darken → reveal overlay → slide content
-  mainTl
-    .to(mediaBox, {
-      width: '92vw',
-      height: '92vh',
-      borderRadius: 0,
-      ease: 'expo.out',
-    }, 0)
-    .to(darken, {
-      backgroundColor: 'rgba(0, 0, 0, 0.45)',
-      ease: 'power2.out',
-    }, 0)
-    .to(overlay, {
-      clipPath: 'inset(0% 0 0 0)',
-      backdropFilter: 'blur(10px)',
-      ease: 'expo.out',
-    }, 0.35)
-    .to(caption, {
-      y: 0,
-      ease: 'expo.out',
-    }, 0.4)
-    .to(content, {
-      y: 0,
-      filter: 'blur(0px)',
-      scale: 1,
-      ease: 'expo.out',
-    }, 0.4);
+  viewport.addEventListener('pointerup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.transition = '';
+    const dx = e.clientX - startX;
+    const threshold = slideWidth * 0.25;
+
+    if (Math.abs(dx) > threshold) {
+      if (dx < 0) {
+        goTo(currentIndex + 1);
+      } else {
+        goTo(currentIndex - 1);
+      }
+    } else {
+      goTo(currentIndex);
+    }
+  });
+
+  // Initialize
+  function init() {
+    calcDimensions();
+    buildDots();
+    updateButtons();
+    updatePosition();
+  }
+
+  init();
+  window.addEventListener('resize', () => {
+    calcDimensions();
+    buildDots();
+    goTo(Math.min(currentIndex, maxIndex()));
+  });
 })();
