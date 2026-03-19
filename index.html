@@ -3,398 +3,567 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CivicLens.</title>
-  <meta name="description" content="CivicLens empowers citizens to report civic issues, track resolutions, and demand accountability from local authorities through an interactive map-based platform." />
+  <title>CivicLens - Citizen Grievance and Civic Issue Tracking Platform</title>
+  <meta name="description" content="CivicLens empowers citizens to report civic issues, track complaint resolutions, and demand accountability from local authorities. File complaints, view reports, and stay updated." />
   <link rel="icon" type="image/svg+xml" href="/Civiclens-vite/favicon.svg" />
-  <script type="module" crossorigin src="/Civiclens-vite/assets/main-BXM-uGi5.js"></script>
-  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-AF_0RKjy.js">
-  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-BmJuHmIp.css">
-  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/main-DujDn-V3.css">
+  <script type="module" crossorigin src="/Civiclens-vite/assets/main-Bj4yERrV.js"></script>
+  <link rel="modulepreload" crossorigin href="/Civiclens-vite/assets/global-BiN9l1TM.js">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/global-B4Q98T15.css">
+  <link rel="stylesheet" crossorigin href="/Civiclens-vite/assets/main-DVMxXJWJ.css">
 </head>
 <body>
 
-  <!-- ═══ NAVBAR ═══ -->
+  <!-- TOP INFO BAR -->
+  <div class="top-bar" id="top-bar">
+    <div class="top-bar-inner">
+      <div class="top-bar-left">
+        <span>Helpline: 1800-XXX-XXXX</span>
+        <span class="top-bar-divider">|</span>
+        <span id="current-date"></span>
+      </div>
+      <div class="top-bar-right">
+        <a href="#" class="top-bar-link">Screen Reader Access</a>
+        <span class="top-bar-divider">|</span>
+        <button class="font-size-btn" id="font-decrease" aria-label="Decrease font size">A-</button>
+        <button class="font-size-btn" id="font-default" aria-label="Default font size">A</button>
+        <button class="font-size-btn" id="font-increase" aria-label="Increase font size">A+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN NAVBAR -->
   <nav class="navbar" id="navbar">
     <div class="navbar-inner">
       <a href="/" class="navbar-brand">
-        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
-          <circle cx="14" cy="14" r="8" stroke="#9FB3DF" stroke-width="1.5"/>
-          <circle cx="14" cy="14" r="2.5" fill="#9FB3DF"/>
-          <line x1="14" y1="1" x2="14" y2="8" stroke="#9FB3DF" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="14" y1="20" x2="14" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-          <line x1="1" y1="14" x2="8" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-          <line x1="20" y1="14" x2="27" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-        </svg>
-        CivicLens<span class="dot">.</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/500px-Emblem_of_India.svg.png" alt="Government Emblem" class="navbar-emblem" />
+        <div class="navbar-brand-text">
+          <span class="brand-name">CivicLens</span>
+          <span class="brand-tagline">Citizen Grievance Tracking Platform</span>
+        </div>
       </a>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <a href="auth.html" class="btn btn-primary btn-sm" id="nav-cta">
-          Get Started
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="navbar-nav" id="navbar-nav">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#statistics" class="nav-link">Statistics</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#snapshots" class="nav-link">Snapshots</a>
+        <a href="#news" class="nav-link">Daily News</a>
+        <a href="#reports" class="nav-link">Reports</a>
+        <div class="nav-auth-buttons">
+          <a href="auth.html" class="btn btn-outline-nav">Login</a>
+          <a href="auth.html?mode=signup" class="btn btn-primary-nav">Sign Up</a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- ═══ HERO PARALLAX SECTION ═══ -->
-  <section class="hero-parallax" id="hero-parallax">
+  <!-- HERO BANNER -->
+  <section class="hero-banner" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Design Thinking Project — 2026
+      </div>
+      <h1>Empowering Citizens.<br/>Enabling Governance.</h1>
+      <p>A transparent civic grievance tracking platform — report issues, track resolutions, and hold your local authorities accountable.</p>
+      <div class="hero-actions">
+        <a href="auth.html?mode=signup" class="btn btn-hero-primary">
+          File a Complaint
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how-it-works" class="btn btn-hero-secondary">
+          Learn More
+        </a>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,60 1440,60 L1440,120 L0,120 Z" fill="#ffffff"/>
+      </svg>
+    </div>
+  </section>
 
-    <!-- Hero Text Overlay -->
-    <div class="hero-text-container">
-      <div class="hero-text-content">
-        <span class="section-label" style="margin-bottom: 20px;">
-          <span class="live-dot"></span>
-          Design Thinking Project
-        </span>
+  <!-- STATISTICS COUNTERS -->
+  <section class="statistics-section" id="statistics">
+    <div class="container">
+      <div class="stats-row">
+        <div class="stat-card reveal">
+          <div class="stat-icon stat-icon-filed">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="stat-number"><span class="counter" data-target="2847">0</span></div>
+          <div class="stat-title">Complaints Filed</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon stat-icon-resolved">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="stat-number"><span class="counter" data-target="2134">0</span></div>
+          <div class="stat-title">Complaints Resolved</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon stat-icon-progress">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-number"><span class="counter" data-target="489">0</span></div>
+          <div class="stat-title">In Progress</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon stat-icon-pending">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="stat-number"><span class="counter" data-target="224">0</span></div>
+          <div class="stat-title">Pending Review</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <h1 class="text-gradient" id="hero-title">
-          Report Issues.<br/>Track Progress.<br/>Demand Action.
-        </h1>
+  <!-- ABOUT SECTION -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">About CivicLens</span>
+        <h2>What is CivicLens?</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>CivicLens is a citizen-centric grievance tracking platform designed to bridge the gap between citizens and local governance. It transforms every pothole, broken streetlight, water leak, and sanitation issue into a trackable, resolvable case.</p>
+          <p>Our platform ensures <strong>100% transparency</strong> — every complaint is publicly visible, every status update is logged, and citizens verify the resolution before a case is closed. No fake closures. No hidden reports.</p>
+          <ul class="about-features-list">
+            <li>
+              <svg class="about-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Real-time complaint tracking on interactive maps
+            </li>
+            <li>
+              <svg class="about-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Photo evidence upload with every complaint
+            </li>
+            <li>
+              <svg class="about-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Citizen-verified resolution system
+            </li>
+            <li>
+              <svg class="about-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Public accountability dashboard
+            </li>
+          </ul>
+        </div>
+        <div class="about-image reveal">
+          <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&h=400&fit=crop" alt="Indian cityscape showing civic infrastructure" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <p class="hero-subtitle" id="hero-sub">
-          A real-time civic governance platform empowering citizens to map community issues and hold authorities accountable — transparently.
-        </p>
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Process</span>
+        <h2>How It Works</h2>
+        <p>Simple 4-step process from reporting to resolution</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-number">01</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>Pin the Issue</h3>
+          <p>Open the live map, tap on the exact location, and our GPS system tags precise coordinates automatically.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">02</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h3>Add Evidence</h3>
+          <p>Upload photos directly from your camera or gallery. Visual evidence helps authorities prioritize the issue.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">03</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <h3>Public Tracking</h3>
+          <p>Track your complaint as it moves from Pending to In Progress to Resolved in real-time on the public dashboard.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">04</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3>Verify and Resolve</h3>
+          <p>You personally verify the fix before the report closes — ensuring genuine accountability, no fake closures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="hero-buttons" id="hero-btns">
-          <a href="auth.html?mode=signup" class="btn btn-primary">
-            Report an Issue
+  <!-- COMPLAINT SNAPSHOTS — Horizontal Carousel -->
+  <section class="snapshots-section" id="snapshots">
+    <div class="container">
+      <div class="snapshots-header">
+        <div class="snapshots-header-text reveal">
+          <span class="section-tag">Live Data</span>
+          <h2>Complaint Snapshots</h2>
+          <p>Recent complaints and their current resolution status across cities</p>
+        </div>
+        <div class="snapshots-nav">
+          <button class="carousel-btn" id="snap-prev" aria-label="Previous slide" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <button class="carousel-btn" id="snap-next" aria-label="Next slide">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-viewport" id="snap-viewport">
+      <div class="carousel-track" id="snap-track">
+        <!-- Card 1 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1621929747188-0b4dc28498d2?w=600&h=400&fit=crop" alt="Road construction and repair work" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-resolved">Resolved</span>
+              <h3>Pothole on NH-48 Service Road</h3>
+              <p>Major pothole causing accidents near Sector 14 junction repaired by PWD within 3 days of filing.</p>
+              <div class="carousel-meta">
+                <span>Sector 14, Gurugram</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- Card 2 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1561631918-0e0d6af260af?w=600&h=400&fit=crop" alt="Urban flooding in street" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-progress">In Progress</span>
+              <h3>Waterlogging Near Andheri Station</h3>
+              <p>Chronic waterlogging during rains causing commuter delays. Drainage work underway by BMC team.</p>
+              <div class="carousel-meta">
+                <span>Andheri West, Mumbai</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- Card 3 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1760782063883-83af1fc0fc83?q=80&w=600&h=400&fit=crop" alt="Street at night with broken light" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-pending">Pending</span>
+              <h3>Broken Streetlight on MG Road</h3>
+              <p>Multiple streetlights non-functional for over 2 weeks creating safety concerns for pedestrians.</p>
+              <div class="carousel-meta">
+                <span>MG Road, Bengaluru</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- Card 4 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1532664189809-02133fee698d?w=600&h=400&fit=crop" alt="Public park with greenery" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-resolved">Resolved</span>
+              <h3>Park Maintenance Overdue</h3>
+              <p>Overgrown vegetation and broken benches in community park resolved after citizen reports.</p>
+              <div class="carousel-meta">
+                <span>Lodhi Garden Area, Delhi</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- Card 5 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1693907986952-3cd372e4c9d8?q=80&w=600&h=400&fit=crop" alt="Water pipeline work" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-progress">In Progress</span>
+              <h3>Water Pipeline Leak in Sector 22</h3>
+              <p>Underground pipeline burst flooding streets. Repair crew deployed, expected completion in 48 hours.</p>
+              <div class="carousel-meta">
+                <span>Sector 22, Chandigarh</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <!-- Card 6 -->
+        <a href="#" class="carousel-slide">
+          <div class="carousel-slide-inner">
+            <img src="https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&h=400&fit=crop" alt="Mumbai Gateway of India" loading="lazy" />
+            <div class="carousel-slide-gradient"></div>
+            <div class="carousel-slide-content">
+              <span class="carousel-badge carousel-badge-resolved">Resolved</span>
+              <h3>Garbage Dump Near School Zone</h3>
+              <p>Open garbage dump near primary school cleared after 5 days. Regular pickup schedule implemented.</p>
+              <div class="carousel-meta">
+                <span>Colaba, Mumbai</span>
+                <span class="carousel-read-more">Read more
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="carousel-dots" id="snap-dots"></div>
+  </section>
+
+  <!-- DAILY NEWS -->
+  <section class="news-section" id="news">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Updates</span>
+        <h2>Daily News and Reports</h2>
+        <p>Latest updates on civic resolutions and platform activity</p>
+      </div>
+      <div class="news-grid">
+        <article class="news-card news-card-featured reveal">
+          <div class="news-img">
+            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&h=350&fit=crop" alt="India Gate" loading="lazy" />
+          </div>
+          <div class="news-body">
+            <span class="news-category">Platform Update</span>
+            <h3>CivicLens Reaches 2,000+ Resolved Complaints</h3>
+            <p>A major milestone for citizen-driven governance — over 2,000 civic issues have been resolved through the CivicLens platform across 15 cities.</p>
+            <div class="news-meta">
+              <span>19 Mar 2026</span>
+              <span>1.2K views</span>
+            </div>
+          </div>
+        </article>
+        <div class="news-sidebar">
+          <article class="news-card-small reveal">
+            <span class="news-category">Resolution Report</span>
+            <h4>Sewage overflow in Sector 22 fixed within 48 hours</h4>
+            <span class="news-date">18 Mar 2026</span>
+          </article>
+          <article class="news-card-small reveal">
+            <span class="news-category">City Update</span>
+            <h4>Mumbai Municipal Corporation partners with CivicLens</h4>
+            <span class="news-date">17 Mar 2026</span>
+          </article>
+          <article class="news-card-small reveal">
+            <span class="news-category">Complaint Alert</span>
+            <h4>30 new complaints registered in Delhi NCR this week</h4>
+            <span class="news-date">16 Mar 2026</span>
+          </article>
+          <article class="news-card-small reveal">
+            <span class="news-category">Recognition</span>
+            <h4>CivicLens featured in Smart India Hackathon shortlist</h4>
+            <span class="news-date">15 Mar 2026</span>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS SECTION -->
+  <section class="reports-section" id="reports">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Analytics</span>
+        <h2>Reports and Analytics</h2>
+      </div>
+      <div class="reports-grid">
+        <div class="report-card reveal">
+          <div class="report-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <h3>Category Breakdown</h3>
+          <p>View complaints by category — Roads, Water, Electricity, Sanitation, Public Spaces, and more.</p>
+          <a href="dashboard.html" class="report-link">View Dashboard
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="report-card reveal">
+          <div class="report-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3>Resolution Rate</h3>
+          <p>Track the overall resolution rate across all cities. Currently at <strong>74.9%</strong> resolved rate.</p>
+          <a href="admin.html" class="report-link">Admin Analytics
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="report-card reveal">
+          <div class="report-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
+          <h3>Issue Heatmap</h3>
+          <p>Visualize problem density across regions. Helps authorities prioritize high-impact zones.</p>
+          <a href="dashboard.html" class="report-link">View Map
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Platform</span>
+        <h2>Platform Features</h2>
+        <p>Everything a civic-engaged citizen needs</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
+          <h3>Interactive Live Map</h3>
+          <p>All reported issues displayed on an interactive map with category-colored markers and cluster views.</p>
+        </div>
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h3>Photo Evidence</h3>
+          <p>Upload images directly with your complaint. Visual proof speeds up authority response and accountability.</p>
+        </div>
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <h3>Real-time Notifications</h3>
+          <p>Get instant alerts when your complaint status changes. Stay informed without refreshing.</p>
+        </div>
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <h3>Admin Analytics</h3>
+          <p>Authority dashboard with charts showing complaint trends, category breakdowns, and resolution rates.</p>
+        </div>
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <h3>Secure Authentication</h3>
+          <p>Powered by Supabase Auth with role-based access. Citizens report, authorities resolve.</p>
+        </div>
+        <div class="feature-card-new reveal">
+          <div class="feature-icon-new">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg>
+          </div>
+          <h3>Issue Heatmap</h3>
+          <p>Toggle a heatmap layer to visualize problem density. Helps authorities prioritize high-impact zones.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="cta">
+    <div class="container">
+      <div class="cta-content reveal">
+        <h2>Ready to Make a Difference?</h2>
+        <p>Join thousands of citizens using CivicLens to build a more transparent, responsive city.</p>
+        <div class="cta-buttons">
+          <a href="auth.html?mode=signup" class="btn btn-hero-primary">
+            Create Free Account
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="#how-it-works" class="btn-liquid-glass">
-            <span class="liquid-glass-bg"></span>
-            <span class="liquid-glass-frost"></span>
-            <span class="liquid-glass-text">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              How it Works
-            </span>
+          <a href="dashboard.html" class="btn btn-hero-secondary">
+            View Dashboard
           </a>
         </div>
       </div>
     </div>
-
-    <!-- Parallax Card Rows -->
-    <div class="parallax-perspective" id="parallax-cards">
-      <div class="parallax-row row-reverse" id="parallax-row-1">
-        <!-- JS will inject cards -->
-      </div>
-      <div class="parallax-row" id="parallax-row-2">
-        <!-- JS will inject cards -->
-      </div>
-      <div class="parallax-row row-reverse" id="parallax-row-3">
-        <!-- JS will inject cards -->
-      </div>
-    </div>
-
   </section>
 
-  <!-- ═══ STATS ═══ -->
-  <section class="stats-strip">
-    <div class="stats-grid">
-      <div class="stat-item reveal">
-        <div class="stat-value">
-          <span class="counter" data-target="100">0</span>%
-        </div>
-        <div class="stat-label">Transparency</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-value">
-          <span class="live-dot"></span> Live
-        </div>
-        <div class="stat-label">Map Updates</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-value">24/7</div>
-        <div class="stat-label">Reporting Active</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ HOW IT WORKS — Sticky Section Tabs ═══ -->
-  <div class="sticky-tabs" id="how-it-works">
-
-    <!-- Nav spacer (matches navbar height) -->
-    <div class="sticky-nav-spacer"></div>
-
-    <!-- Step 1: Report -->
-    <section class="sticky-section">
-      <div class="sticky-header">
-        <div class="sticky-header-content">
-          <div class="sticky-header-layout">
-            <span class="sticky-step-badge">01</span>
-            <h2 class="sticky-title"> Pin the Issue</h2>
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col footer-about">
+            <div class="footer-brand-block">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/500px-Emblem_of_India.svg.png" alt="Emblem" class="footer-emblem" />
+              <div>
+                <div class="footer-brand-name">CivicLens</div>
+                <div class="footer-brand-sub">Citizen Grievance Tracking Platform</div>
+              </div>
+            </div>
+            <p>Empowering citizens to report civic issues, track resolutions, and demand accountability from local authorities.</p>
           </div>
-        </div>
-      </div>
-      <div class="sticky-body">
-        <div class="sticky-body-layout">
-          <div class="sticky-step-visual">
-            <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=700&h=450&fit=crop" alt="Indian city map view" loading="lazy" />
+          <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#snapshots">Snapshots</a></li>
+              <li><a href="#news">Daily News</a></li>
+            </ul>
           </div>
-          <div class="sticky-step-info">
-            <h3>Spot a problem? Drop a pin.</h3>
-            <p>Open the live map, tap on the exact location of the issue, and our geolocation engine tags precise GPS coordinates automatically. No address lookup needed — just point and report.</p>
-            <ul class="sticky-checklist">
-              <li><span class="check">✓</span> One-tap location pinning</li>
-              <li><span class="check">✓</span> Auto GPS coordinate capture</li>
-              <li><span class="check">✓</span> Works on mobile & desktop</li>
+          <div class="footer-col">
+            <h4>Platform</h4>
+            <ul>
+              <li><a href="auth.html?mode=signup">File Complaint</a></li>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="admin.html">Admin Panel</a></li>
+              <li><a href="rewards.html">Rewards</a></li>
+              <li><a href="#reports">Reports</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li>Helpline: 1800-XXX-XXXX</li>
+              <li>support@civiclens.gov.in</li>
+              <li>Civic Authority Office</li>
+              <li>New Delhi, India</li>
             </ul>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Step 2: Evidence -->
-    <section class="sticky-section">
-      <div class="sticky-header">
-        <div class="sticky-header-content">
-          <div class="sticky-header-layout">
-            <span class="sticky-step-badge">02</span>
-            <h2 class="sticky-title"> Add Evidence</h2>
-          </div>
-        </div>
-      </div>
-      <div class="sticky-body">
-        <div class="sticky-body-layout">
-          <div class="sticky-step-visual">
-            <img src="./civic-sense-in-india.jpg" alt="Civic evidence in India" loading="lazy" />
-          </div>
-          <div class="sticky-step-info">
-            <h3>Upload photos as proof.</h3>
-            <p>Attach images directly from your camera or gallery. Visual evidence helps authorities prioritize and understand the severity of the issue — no guessing, just clear proof.</p>
-            <ul class="sticky-checklist">
-              <li><span class="check">✓</span> Direct camera upload</li>
-              <li><span class="check">✓</span> Cloud-stored via Supabase</li>
-              <li><span class="check">✓</span> Before/after comparison ready</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Step 3: Track -->
-    <section class="sticky-section">
-      <div class="sticky-header">
-        <div class="sticky-header-content">
-          <div class="sticky-header-layout">
-            <span class="sticky-step-badge">03</span>
-            <h2 class="sticky-title"> Public Tracking</h2>
-          </div>
-        </div>
-      </div>
-      <div class="sticky-body">
-        <div class="sticky-body-layout">
-          <div class="sticky-step-visual">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&h=450&fit=crop" alt="Indian analytics dashboard" loading="lazy" />
-          </div>
-          <div class="sticky-step-info">
-            <h3>Watch your report progress live.</h3>
-            <p>Every complaint is publicly visible. Track your report as it moves from <span style="color:var(--warning);font-weight:700;">Pending</span> → <span style="color:var(--progress);font-weight:700;">In Progress</span> → <span style="color:var(--success);font-weight:700;">Resolved</span> in real-time on the dashboard.</p>
-            <ul class="sticky-checklist">
-              <li><span class="check">✓</span> Real-time status updates</li>
-              <li><span class="check">✓</span> Toast notifications on changes</li>
-              <li><span class="check">✓</span> Full public transparency</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Step 4: Verify -->
-    <section class="sticky-section">
-      <div class="sticky-header">
-        <div class="sticky-header-content">
-          <div class="sticky-header-layout">
-            <span class="sticky-step-badge">04</span>
-            <h2 class="sticky-title"> Verify & Resolve</h2>
-          </div>
-        </div>
-      </div>
-      <div class="sticky-body">
-        <div class="sticky-body-layout">
-          <div class="sticky-step-visual">
-            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=700&h=450&fit=crop" alt="India Gate - civic resolution" loading="lazy" />
-          </div>
-          <div class="sticky-step-info">
-            <h3>You confirm the fix. No fake closures.</h3>
-            <p>When authorities claim the work is done, the ticket enters "Awaiting Confirmation." You personally verify the fix before the report can close — ensuring genuine accountability.</p>
-            <ul class="sticky-checklist">
-              <li><span class="check">✓</span> Citizen-verified resolution</li>
-              <li><span class="check">✓</span> Anti-fake-closure system</li>
-              <li><span class="check">✓</span> Complete audit trail</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <!-- ═══ FEATURES ═══ -->
-  <section class="features-section" id="features">
-    <div class="section-header reveal">
-      <span class="section-label">Platform</span>
-      <h2>Built for <span class="text-gradient">Real Impact</span></h2>
-      <p>Everything a civic-engaged citizen needs.</p>
     </div>
-
-    <ul class="features-grid" id="features-grid">
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Interactive Live Map</h3>
-              <p>All reported issues displayed on a dark-themed interactive map with category-colored markers and cluster views.</p>
-            </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <span>2026 CivicLens — Created By Sarthak and Team</span>
+          <div class="footer-bottom-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+            <a href="#">Disclaimer</a>
+            <a href="#">Accessibility</a>
           </div>
         </div>
-      </li>
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Photo Evidence</h3>
-              <p>Upload images directly with your complaint. Visual proof speeds up authority response and accountability.</p>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Real-time Notifications</h3>
-              <p>Get instant toast alerts when your complaint status changes. Stay informed without refreshing.</p>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Admin Analytics</h3>
-              <p>Authority dashboard with charts showing complaint trends, category breakdowns, and resolution rates.</p>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Secure Authentication</h3>
-              <p>Powered by Supabase Auth with role-based access. Citizens report, authorities resolve.</p>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li class="glow-item reveal">
-        <div class="glow-wrapper">
-          <div class="glow-border"><div class="glow"></div></div>
-          <div class="feature-card">
-            <div class="feature-icon-box">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg>
-            </div>
-            <div class="feature-text">
-              <h3>Issue Heatmap</h3>
-              <p>Toggle a heatmap layer to visualize problem density. Helps authorities prioritize high-impact zones.</p>
-            </div>
-          </div>
-        </div>
-      </li>
-
-    </ul>
-  </section>
-
-  <!-- ═══ SCROLL ANIMATED EXPAND — "Built for Real Impact" ═══ -->
-  <section class="hsv-root" id="scroll-expand">
-    <!-- Headline area -->
-    <div class="hsv-container" id="hsv-headline">
-      <div class="hsv-headline">
-        <h1 class="hsv-title">Built for Real Impact</h1>
-        <h2 class="hsv-subtitle">Empowering Citizens. Enabling Governance.</h2>
-        <div class="hsv-meta">
-          <span class="hsv-meta-dot"></span>
-          India • 2026
-        </div>
-      </div>
-    </div>
-
-    <!-- Sticky scroll section -->
-    <div class="hsv-scroll" id="hsv-scroll-trigger" style="height: 280vh;">
-      <div class="hsv-sticky">
-        <div class="hsv-media" id="hsv-media-box">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/500px-Emblem_of_India.svg.png" alt="Government of India Emblem" />
-          <!-- Dark overlay -->
-          <div class="hsv-darken" id="hsv-darken"></div>
-          <!-- Content overlay -->
-          <div class="hsv-overlay" id="hsv-overlay">
-            <div class="hsv-caption" id="hsv-caption">CIVICLENS • PLATFORM</div>
-            <div class="hsv-overlay-content" id="hsv-overlay-content">
-              <h3>Transparency.<br>Accountability.<br>Resolution.</h3>
-              <p>CivicLens bridges the gap between citizens and local governance — turning every pothole, broken streetlight, and water leak into a trackable, resolvable case.</p>
-              <p>Report → Track → Verify → Resolve</p>
-              <a href="auth.html?mode=signup" class="btn btn-primary" style="margin-top: 12px; width: fit-content; align-self: center;">
-                Get Started
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CTA ═══ -->
-  <section class="cta-section">
-    <div class="cta-content reveal">
-      <h2 class="text-gradient">Ready to Make a Difference?</h2>
-      <p>Join CivicLens and help build a more transparent, responsive city.</p>
-      <a href="auth.html?mode=signup" class="btn btn-primary">
-        Create Free Account
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">CivicLens<span style="color: var(--accent);">.</span></div>
-      <div class="footer-links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Contact</a>
-      </div>
-      <div style="color: var(--text-dim); font-size: 0.8rem;">
-        © 2026 CivicLens — Created By Sarthak and Team
       </div>
     </div>
   </footer>

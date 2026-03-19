@@ -1,4 +1,4 @@
-import"./global-AF_0RKjy.js";import{g as b,c as o,s as u}from"./notifications-RDF-kLLZ.js";const g={metro:`<svg class="reward-svg reward-svg--metro" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+import"./global-BiN9l1TM.js";import{g as b,c as o,s as u}from"./notifications-RDF-kLLZ.js";const g={metro:`<svg class="reward-svg reward-svg--metro" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="10" y="8" width="28" height="28" rx="6" class="svg-body"/>
     <circle cx="18" cy="30" r="2.5" class="svg-wheel svg-wheel--left"/>
     <circle cx="30" cy="30" r="2.5" class="svg-wheel svg-wheel--right"/>
