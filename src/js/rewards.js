@@ -4,6 +4,9 @@
 
 import { supabase, getCurrentUser } from './supabase.js';
 import { showToast } from './notifications.js';
+import {
+  SEVERITY_BASE_CREDITS, CATEGORY_MULTIPLIERS, SPEED_TIERS, SEVERITY_OPTIONS
+} from './rewardAlgorithm.js';
 
 // ─── Animated SVG Icons ───
 const SVG_ICONS = {
@@ -121,7 +124,6 @@ const REWARDS = [
 
 let currentUser = null;
 let userCredits = 0;
-let creditsPerResolved = 50;
 
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', async () => {
@@ -132,7 +134,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   setupUserInfo();
-  await loadRewardConfig();
 
   if (currentUser.role === 'authority') {
     // Admin view
@@ -150,71 +151,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// ─── Load Reward Config ───
-async function loadRewardConfig() {
-  try {
-    const { data } = await supabase
-      .from('reward_config')
-      .select('credits_per_resolved')
-      .eq('id', 1)
-      .single();
-
-    if (data) {
-      creditsPerResolved = data.credits_per_resolved;
-      // Update citizen subtext
-      const subtext = document.getElementById('credit-subtext');
-      if (subtext) subtext.textContent = `Earn ${creditsPerResolved} credits per resolved complaint`;
-    }
-  } catch (err) {
-    console.warn('reward_config not found, using default:', creditsPerResolved);
-  }
-}
 
 // ═══ ADMIN VIEW ═══
 
 async function loadAdminView() {
-  // Load config into input
-  const configInput = document.getElementById('credits-per-resolved');
-  const configPreview = document.getElementById('current-config-value');
-  if (configInput) configInput.value = creditsPerResolved;
-  if (configPreview) configPreview.textContent = creditsPerResolved;
-
-  // Save config button
-  document.getElementById('save-config-btn')?.addEventListener('click', saveRewardConfig);
-
   // Load users
   await loadAllUsers();
 }
 
-async function saveRewardConfig() {
-  const input = document.getElementById('credits-per-resolved');
-  const newValue = parseInt(input?.value, 10);
 
-  if (!newValue || newValue < 1 || newValue > 1000) {
-    showToast('Please enter a value between 1 and 1000', 'error');
-    return;
-  }
 
-  const btn = document.getElementById('save-config-btn');
-  if (btn) btn.disabled = true;
-
-  const { error } = await supabase
-    .from('reward_config')
-    .update({ credits_per_resolved: newValue, updated_at: new Date().toISOString() })
-    .eq('id', 1);
-
-  if (error) {
-    console.error('Config save error:', error);
-    showToast('Failed to save — have you run the SQL setup?', 'error');
-  } else {
-    creditsPerResolved = newValue;
-    const preview = document.getElementById('current-config-value');
-    if (preview) preview.textContent = newValue;
-    showToast(`Credits per resolved set to ${newValue}`, 'success');
-  }
-
-  if (btn) btn.disabled = false;
-}
 
 async function loadAllUsers() {
   const loadingEl = document.getElementById('admin-users-loading');
@@ -399,6 +345,8 @@ function renderRewards() {
     btn.addEventListener('click', () => handleRedeem(btn.dataset.id));
   });
 }
+
+// ─── How Credits Work (Citizen Explainer) ───
 
 // ─── Handle Redemption ───
 async function handleRedeem(rewardId) {
