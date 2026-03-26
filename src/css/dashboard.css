@@ -673,6 +673,95 @@
   margin-top: 6px;
 }
 
+/* ─── SEVERITY DOT ─── */
+.sev-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+/* ─── SEVERITY PICKER (Authority View) ─── */
+.cc-actions--authority {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.severity-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.severity-picker-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
+
+.severity-pills {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.severity-pill {
+  cursor: pointer;
+}
+
+.severity-pill input[type="radio"] {
+  display: none;
+}
+
+.severity-pill-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 2px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-muted);
+  transition: all 0.2s var(--ease-out);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.severity-pill-inner:hover {
+  border-color: var(--sev-color);
+  color: var(--sev-color);
+  background: color-mix(in srgb, var(--sev-color) 8%, transparent);
+}
+
+.severity-pill input[type="radio"]:checked + .severity-pill-inner {
+  background: color-mix(in srgb, var(--sev-color) 15%, transparent);
+  border-color: var(--sev-color);
+  color: var(--sev-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sev-color) 20%, transparent);
+}
+
+/* Severity badge on resolved complaints */
+.cc-severity-badge {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--sev-color) 12%, transparent);
+  color: var(--sev-color);
+  border: 1px solid color-mix(in srgb, var(--sev-color) 25%, transparent);
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
   .dashboard-layout {

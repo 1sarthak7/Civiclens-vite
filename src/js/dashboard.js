@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
 import { supabase, getCurrentUser, signOut } from './supabase.js';
 import { showToast } from './notifications.js';
+import { calculateReward, SEVERITY_OPTIONS } from './rewardAlgorithm.js';
 
 // ─── State ───
 let map;
@@ -17,7 +18,6 @@ let currentUser = null;
 let heatmapLayer = null;
 let heatmapActive = false;
 let markersLayer = null;
-let creditsPerResolved = 50; // default, overridden by reward_config
 
 // ─── Custom SVG Markers ───
 function createSvgIcon(color, pulseColor) {
@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupProfile();
   setupRoleViews();
   initMap();
-  await loadRewardConfig();
   await loadComplaints();
   await loadUserCredits();
   setupEventListeners();
@@ -95,7 +94,7 @@ function setupRoleViews() {
 function initMap() {
   map = L.map('map', {
     zoomControl: false,
-  }).setView([19.0760, 72.8777], 13);
+  }).setView([18.5204, 73.8567], 13);
 
   // Zoom control on bottom-right
   L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -142,7 +141,7 @@ async function loadComplaints(filterMode = 'default') {
 
   let query = supabase.from('complaints').select('*').order('created_at', { ascending: false });
 
-  if (filterMode === 'mine' || (currentUser.role === 'citizen' && filterMode === 'default')) {
+  if (filterMode === 'mine') {
     query = query.eq('user_id', currentUser.id);
   }
 
@@ -224,15 +223,28 @@ function renderActions(issue) {
     return `
       <div class="cc-actions">
         <button class="btn btn-primary btn-sm btn-full confirm-btn" data-id="${issue.id}">
-          ✅ Confirm Resolution
+          Confirm Resolution
         </button>
       </div>
     `;
   }
 
   if (currentUser.role === 'authority' && issue.status !== 'Resolved') {
+    const severityPills = SEVERITY_OPTIONS.map(s => `
+      <label class="severity-pill" data-severity="${s.key}" title="${s.desc}">
+        <input type="radio" name="severity-${issue.id}" value="${s.key}" ${issue.severity === s.key ? 'checked' : ''} />
+        <span class="severity-pill-inner" style="--sev-color: ${s.color}">${s.icon} ${s.label}</span>
+      </label>
+    `).join('');
+
     return `
-      <div class="cc-actions">
+      <div class="cc-actions cc-actions--authority">
+        <div class="severity-picker">
+          <span class="severity-picker-label">Severity</span>
+          <div class="severity-pills" data-complaint-id="${issue.id}">
+            ${severityPills}
+          </div>
+        </div>
         <select class="status-select" data-id="${issue.id}">
           <option value="" disabled selected>Update Status</option>
           <option value="In Progress">In Progress</option>
@@ -241,6 +253,14 @@ function renderActions(issue) {
         </select>
       </div>
     `;
+  }
+
+  // Show severity badge on resolved complaints
+  if (issue.severity && issue.status === 'Resolved') {
+    const sev = SEVERITY_OPTIONS.find(s => s.key === issue.severity);
+    if (sev) {
+      return `<div class="cc-severity-badge" style="--sev-color: ${sev.color}">${sev.icon} ${sev.label} severity</div>`;
+    }
   }
 
   return '';
@@ -399,26 +419,22 @@ async function handleSubmitReport(e) {
   }
 }
 
-// ─── Load Reward Config ───
-async function loadRewardConfig() {
-  try {
-    const { data } = await supabase
-      .from('reward_config')
-      .select('credits_per_resolved')
-      .eq('id', 1)
-      .single();
-
-    if (data) creditsPerResolved = data.credits_per_resolved;
-  } catch (err) {
-    console.warn('reward_config not found, using default:', creditsPerResolved);
-  }
-}
-
 // ─── Update Status ───
 async function updateComplaintStatus(id, newStatus) {
+  // If resolving, get the severity from the picker
+  let severity = null;
+  if (newStatus === 'Resolved' || newStatus === 'Awaiting Confirmation' || newStatus === 'In Progress') {
+    const severityRadio = document.querySelector(`input[name="severity-${id}"]:checked`);
+    severity = severityRadio?.value || null;
+  }
+
+  // Build the update payload
+  const updatePayload = { status: newStatus, updated_at: new Date().toISOString() };
+  if (severity) updatePayload.severity = severity;
+
   const { error } = await supabase
     .from('complaints')
-    .update({ status: newStatus, updated_at: new Date().toISOString() })
+    .update(updatePayload)
     .eq('id', id);
 
   if (error) {
@@ -428,7 +444,7 @@ async function updateComplaintStatus(id, newStatus) {
 
     // Award credits when complaint is resolved
     if (newStatus === 'Resolved') {
-      await awardCredits(id, creditsPerResolved);
+      await awardCreditsWithAlgorithm(id);
     }
 
     await loadComplaints();
@@ -436,13 +452,13 @@ async function updateComplaintStatus(id, newStatus) {
   }
 }
 
-// ─── Award Credits ───
-async function awardCredits(complaintId, amount) {
+// ─── Award Credits (Multi-Factor Algorithm) ───
+async function awardCreditsWithAlgorithm(complaintId) {
   try {
-    // Get the complaint author
+    // Fetch the full complaint for algorithm inputs
     const { data: complaint, error: fetchErr } = await supabase
       .from('complaints')
-      .select('user_id')
+      .select('user_id, severity, category, created_at, updated_at')
       .eq('id', complaintId)
       .single();
 
@@ -451,19 +467,27 @@ async function awardCredits(complaintId, amount) {
       return;
     }
 
-    console.log('Awarding', amount, 'credits to user:', complaint.user_id);
+    // Run the reward algorithm
+    const { credits, breakdown } = calculateReward({
+      severity:   complaint.severity || 'medium',
+      category:   complaint.category || 'Other',
+      filedAt:    complaint.created_at,
+      resolvedAt: complaint.updated_at || new Date().toISOString(),
+    });
+
+    console.log('Reward breakdown:', breakdown);
+    console.log('Awarding', credits, 'credits to user:', complaint.user_id);
 
     // Approach 1: Try RPC function
     const { error: rpcErr } = await supabase.rpc('award_credits', {
       target_user_id: complaint.user_id,
-      credit_amount: amount,
+      credit_amount: credits,
     });
 
     if (rpcErr) {
       console.warn('RPC failed, trying direct update. RPC error:', rpcErr.message, rpcErr);
 
       // Approach 2: Fallback — direct profile update
-      // First read current credits
       const { data: profile, error: readErr } = await supabase
         .from('profiles')
         .select('credits')
@@ -477,7 +501,7 @@ async function awardCredits(complaintId, amount) {
       }
 
       const currentCredits = profile?.credits || 0;
-      const newCredits = currentCredits + amount;
+      const newCredits = currentCredits + credits;
 
       const { error: updateErr } = await supabase
         .from('profiles')
@@ -489,11 +513,11 @@ async function awardCredits(complaintId, amount) {
         showToast('Credit award failed — check console for details', 'error');
       } else {
         console.log('Credits awarded via direct update:', newCredits);
-        showToast(`🎉 ${amount} credits awarded!`, 'success');
+        showToast(`${credits} credits awarded! (${breakdown.severity.toUpperCase()} × ${breakdown.category} × ${breakdown.speedLabel})`, 'success');
       }
     } else {
       console.log('Credits awarded via RPC');
-      showToast(`🎉 ${amount} credits awarded!`, 'success');
+      showToast(`${credits} credits awarded! (${breakdown.severity.toUpperCase()} × ${breakdown.category} × ${breakdown.speedLabel})`, 'success');
     }
   } catch (err) {
     console.error('Credit award error:', err);
@@ -522,7 +546,7 @@ function locateUser() {
   }
 
   const btn = document.getElementById('locate-btn');
-  if (btn) btn.textContent = '📍 Locating...';
+  if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Locating...';
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -538,7 +562,7 @@ function locateUser() {
         fillOpacity: 0.8,
       }).addTo(map).bindPopup('You are here').openPopup();
 
-      if (btn) btn.textContent = '📍 My Location';
+      if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> My Location';
       showToast('Location found!', 'success');
     },
     (err) => {
@@ -548,7 +572,7 @@ function locateUser() {
       if (err.code === 2) msg = 'Location unavailable. Try again.';
       if (err.code === 3) msg = 'Location request timed out. Try again.';
       showToast(msg, 'error');
-      if (btn) btn.textContent = '📍 My Location';
+      if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> My Location';
     },
     {
       enableHighAccuracy: false,
@@ -602,15 +626,7 @@ function getStatusClass(status) {
 }
 
 function getCategoryEmoji(category) {
-  const emojis = {
-    Roads: '🚧',
-    Garbage: '🗑️',
-    Water: '💧',
-    Streetlight: '💡',
-    Drainage: '🌊',
-    Other: '📋',
-  };
-  return emojis[category] || '📍';
+  return '';
 }
 
 function formatDate(dateStr) {
@@ -757,7 +773,7 @@ function initSearchBar() {
       weight: 2,
       opacity: 1,
       fillOpacity: 0.7,
-    }).addTo(map).bindPopup(`<b>📍 ${name}</b>`).openPopup();
+    }).addTo(map).bindPopup(`<b>${name}</b>`).openPopup();
 
     showToast(`Moved to ${name}`, 'success');
   }

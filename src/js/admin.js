@@ -173,6 +173,5 @@ function getStatusClass(status) {
 }
 
 function getCategoryEmoji(category) {
-  const emojis = { Roads: '🚧', Garbage: '🗑️', Water: '💧', Streetlight: '💡', Drainage: '🌊', Other: '📋' };
-  return emojis[category] || '📍';
+  return '';
 }
