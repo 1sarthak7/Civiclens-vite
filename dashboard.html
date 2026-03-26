@@ -51,19 +51,19 @@
       <nav class="sidebar-nav">
         <ul>
           <li class="nav-item active" data-filter="default">
-            <a><span class="nav-icon">🏠</span> Dashboard</a>
+            <a><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
           </li>
           <li class="nav-item" data-filter="mine">
-            <a><span class="nav-icon">📂</span> My Reports</a>
+            <a><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span> My Reports</a>
           </li>
           <li class="nav-item hidden" id="nav-admin" data-filter="all">
-            <a><span class="nav-icon">📊</span> Dept. Overview</a>
+            <a><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 100 4 2 2 0 000-4z"/></svg></span> Dept. Overview</a>
           </li>
           <li class="nav-item hidden" id="nav-analytics">
-            <a href="admin.html"><span class="nav-icon">📈</span> Analytics</a>
+            <a href="admin.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Analytics</a>
           </li>
           <li class="nav-item">
-            <a href="rewards.html"><span class="nav-icon">🎁</span> Rewards</a>
+            <a href="rewards.html"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></span> Rewards</a>
           </li>
         </ul>
       </nav>
@@ -104,10 +104,12 @@
         </div>
 
         <button class="map-btn" id="locate-btn">
-          📍 My Location
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          My Location
         </button>
         <button class="map-btn" id="heatmap-btn">
-          🌡️ Heatmap
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg>
+          Heatmap
         </button>
       </div>
 
@@ -115,18 +117,18 @@
 
       <!-- Report Form (hidden by default) -->
       <div class="report-overlay hidden" id="report-form-container">
-        <h3>📍 Report Issue</h3>
+        <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Report Issue</h3>
         <p class="coords" id="coords-display">Lat: —, Lng: —</p>
 
         <form class="report-form" id="complaint-form">
           <label for="category">Category</label>
           <select id="category" class="input-field" required>
-            <option value="Roads">🚧 Pothole / Road Damage</option>
-            <option value="Garbage">🗑️ Garbage / Sanitation</option>
-            <option value="Water">💧 Water Leakage</option>
-            <option value="Streetlight">💡 Broken Streetlight</option>
-            <option value="Drainage">🌊 Drainage / Flooding</option>
-            <option value="Other">📋 Other</option>
+            <option value="Roads">Pothole / Road Damage</option>
+            <option value="Garbage">Garbage / Sanitation</option>
+            <option value="Water">Water Leakage</option>
+            <option value="Streetlight">Broken Streetlight</option>
+            <option value="Drainage">Drainage / Flooding</option>
+            <option value="Other">Other</option>
           </select>
 
           <label for="desc">Description</label>
@@ -134,7 +136,7 @@
 
           <label>Photo Evidence (Optional)</label>
           <div class="upload-area" id="upload-area">
-            <span>📷 Click or drag to upload</span>
+            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Click or drag to upload</span>
             <input type="file" id="image-input" accept="image/*" />
           </div>
           <img class="upload-preview" id="image-preview" alt="Preview" />
