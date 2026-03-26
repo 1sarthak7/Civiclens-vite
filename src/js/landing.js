@@ -3,6 +3,8 @@
 // Clean, simple interactions — vanilla JS, no GSAP
 // ===============================================================
 
+import { supabase } from './supabase.js';
+
 // --- Set current date in top bar ---
 const dateEl = document.getElementById('current-date');
 if (dateEl) {
@@ -132,24 +134,59 @@ function animateCounter(el, target, duration = 2000) {
   requestAnimationFrame(update);
 }
 
-const counterObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const counters = entry.target.querySelectorAll('.counter');
-        counters.forEach((counter) => {
-          const target = parseInt(counter.dataset.target, 10);
-          animateCounter(counter, target);
-        });
-        counterObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.3 }
-);
+async function loadRealTimeStats() {
+  try {
+    const { data: complaints, error } = await supabase
+      .from('complaints')
+      .select('status');
 
-const statsSection = document.querySelector('.statistics-section');
-if (statsSection) counterObserver.observe(statsSection);
+    if (error) throw error;
+
+    let total = complaints.length;
+    let resolved = 0;
+    let inProgress = 0;
+    let pending = 0;
+
+    complaints.forEach(c => {
+      if (c.status === 'Resolved') resolved++;
+      else if (c.status === 'In Progress' || c.status === 'Awaiting Confirmation') inProgress++;
+      else pending++; // 'Pending' or anything else
+    });
+
+    const counters = document.querySelectorAll('.counter');
+    if (counters.length >= 4) {
+      // Base format in HTML order: Filed, Resolved, In Progress, Pending Review
+      counters[0].dataset.target = total;
+      counters[1].dataset.target = resolved;
+      counters[2].dataset.target = inProgress;
+      counters[3].dataset.target = pending;
+    }
+  } catch (err) {
+    console.error('Failed to load real-time stats:', err);
+  }
+}
+
+// Fetch stats, update dataset, then observe
+loadRealTimeStats().then(() => {
+  const counterObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const counters = entry.target.querySelectorAll('.counter');
+          counters.forEach((counter) => {
+            const target = parseInt(counter.dataset.target, 10);
+            animateCounter(counter, target);
+          });
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+
+  const statsSection = document.querySelector('.statistics-section');
+  if (statsSection) counterObserver.observe(statsSection);
+});
 
 // --- Navbar shadow on scroll ---
 const navbar = document.getElementById('navbar');
@@ -167,7 +204,7 @@ if (navbar) {
 // SNAPSHOTS CAROUSEL
 // Horizontal scrollable carousel with arrow nav + dot indicators
 // ===============================================================
-(function initCarousel() {
+;(function initCarousel() {
   const track = document.getElementById('snap-track');
   const viewport = document.getElementById('snap-viewport');
   const prevBtn = document.getElementById('snap-prev');
@@ -185,9 +222,9 @@ if (navbar) {
 
   function calcDimensions() {
     if (slides.length === 0) return;
-    slideWidth = slides[0].offsetWidth;
+    slideWidth = slides[0].offsetWidth || 320;
     gap = parseFloat(getComputedStyle(track).gap) || 20;
-    const vpWidth = viewport.offsetWidth;
+    const vpWidth = viewport.clientWidth || window.innerWidth;
     visibleSlides = Math.floor(vpWidth / (slideWidth + gap));
     if (visibleSlides < 1) visibleSlides = 1;
   }
@@ -245,6 +282,9 @@ if (navbar) {
     const matrix = new DOMMatrix(style.transform);
     return matrix.m41;
   }
+
+  // Prevent native image dragging
+  viewport.addEventListener('dragstart', (e) => e.preventDefault());
 
   viewport.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
