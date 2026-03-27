@@ -304,7 +304,7 @@ function openDetailModal(issue, marker) {
   if (issue.severity) {
     const sev = SEVERITY_OPTIONS.find(s => s.key === issue.severity);
     if (sev) {
-      sevText.textContent = `${sev.icon} ${sev.label} severity`;
+      sevText.textContent = `${sev.label} severity`;
       sevDisplay.classList.remove('hidden');
     } else {
       sevDisplay.classList.add('hidden');
