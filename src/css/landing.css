@@ -1249,4 +1249,55 @@
   .carousel-slide-inner { height: 380px; }
   .features-grid { grid-template-columns: 1fr; }
   .snapshots-nav { display: none; }
+
+  .hero-banner { padding: 50px 5% 80px; }
+  .hero-banner h1 { font-size: 1.6rem; }
+  .hero-banner p { font-size: 0.9rem; }
+  .hero-actions { flex-direction: column; gap: 10px; }
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+  }
+
+  .stat-card { padding: 20px 16px; }
+  .stat-number { font-size: 1.8rem; }
+  .stat-title { font-size: 0.72rem; }
+
+  .step-card { padding: 24px 18px; }
+
+  .about-section { padding: 48px 5%; }
+  .about-text p { font-size: 0.85rem; }
+
+  .news-body { padding: 16px; }
+  .news-body h3 { font-size: 1rem; }
+  .news-body p { font-size: 0.8rem; }
+
+  .report-card { padding: 24px 18px; }
+  .report-card h3 { font-size: 0.95rem; }
+  .report-card p { font-size: 0.8rem; }
+
+  .feature-card-new { padding: 24px 18px; }
+  .feature-card-new h3 { font-size: 0.95rem; }
+  .feature-card-new p { font-size: 0.8rem; }
+
+  .cta-content h2 { font-size: 1.5rem; }
+  .cta-content p { font-size: 0.85rem; }
+  .cta-buttons { flex-direction: column; }
+  .cta-buttons .btn { width: 100%; justify-content: center; }
+
+  .footer-brand-name { font-size: 1rem; }
+  .footer-col h4 { font-size: 0.85rem; }
+  .footer-col ul li, .footer-col ul li a { font-size: 0.78rem; }
+}
+
+@media (max-width: 360px) {
+  .navbar-brand-text .brand-name { font-size: 0.9rem; }
+  .navbar-brand-text .brand-tagline { font-size: 0.55rem; }
+  .navbar-emblem { width: 28px; height: 28px; }
+  .hero-banner h1 { font-size: 1.4rem; }
+  .carousel-slide { width: 250px; }
+  .carousel-slide-inner { height: 340px; }
 }

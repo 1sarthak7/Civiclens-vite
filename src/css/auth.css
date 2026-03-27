@@ -193,3 +193,27 @@
     padding: 30px 20px;
   }
 }
+
+@media (max-width: 480px) {
+  .auth-form-side {
+    padding: 24px 16px;
+  }
+
+  .auth-card h2 {
+    font-size: 1.4rem;
+  }
+
+  .auth-card .subtitle {
+    font-size: 0.82rem;
+    margin-bottom: 24px;
+  }
+
+  .auth-back {
+    font-size: 0.78rem;
+    margin-bottom: 28px;
+  }
+
+  .auth-toggle {
+    font-size: 0.78rem;
+  }
+}

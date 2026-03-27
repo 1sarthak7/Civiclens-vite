@@ -1063,4 +1063,41 @@
   .rewards-grid { grid-template-columns: 1fr; }
 
   .modal-card { padding: 32px 24px; }
+
+  .reward-card { padding: 20px 16px; }
+
+  .redeem-history-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .rewards-main { padding: 16px 12px 60px; }
+
+  .credit-hero { padding: 20px 16px; border-radius: 12px; }
+
+  .credit-value { font-size: 2rem; }
+
+  .credit-label { font-size: 0.7rem; }
+
+  .credit-stats { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+
+  .credit-stat-value { font-size: 1rem; }
+
+  .credit-stat-label { font-size: 0.6rem; }
+
+  .reward-card { padding: 16px 12px; }
+
+  .reward-card-title { font-size: 0.9rem; }
+
+  .reward-card-cost { font-size: 0.8rem; }
+
+  .modal-card {
+    padding: 24px 16px;
+    margin: 16px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
