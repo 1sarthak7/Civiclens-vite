@@ -1195,8 +1195,19 @@
 }
 
 @media (max-width: 768px) {
+  /* Top bar */
+  .top-bar { padding: 6px 4%; font-size: 0.7rem; }
   .top-bar-inner { justify-content: center; text-align: center; }
   .top-bar-left { display: none; }
+  .top-bar-right { flex-wrap: wrap; justify-content: center; }
+
+  /* Navbar: compact brand + hamburger menu */
+  .navbar { padding: 0 4%; }
+
+  .navbar-brand { gap: 8px; }
+  .navbar-emblem { width: 36px; height: 36px; }
+  .brand-name { font-size: 1rem; }
+  .brand-tagline { font-size: 0.6rem; }
 
   .mobile-menu-toggle { display: flex; }
 
@@ -1208,18 +1219,26 @@
     right: 0;
     background: #ffffff;
     flex-direction: column;
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-bottom: 3px solid var(--govt-saffron);
     box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    gap: 4px;
+    gap: 2px;
+    z-index: 999;
   }
 
   .navbar-nav.open { display: flex; }
 
   .nav-link {
-    padding: 10px 14px;
+    padding: 12px 16px;
     width: 100%;
     border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .nav-link:hover,
+  .nav-link:active {
+    background: var(--bg-secondary);
   }
 
   .nav-auth-buttons {
@@ -1228,18 +1247,43 @@
     padding-top: 12px;
     border-top: 1px solid var(--border-light);
     width: 100%;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .hero-banner { padding: 70px 5% 100px; min-height: auto; }
-  .hero-banner h1 { font-size: 2rem; }
+  .nav-auth-buttons .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
 
-  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  /* Hero */
+  .hero-banner { padding: 60px 5% 80px; min-height: auto; }
+  .hero-banner h1 { font-size: 1.8rem; }
+  .hero-banner p { font-size: 0.9rem; max-width: 100%; }
+
+  /* Sections */
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .about-grid { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr; }
 
+  /* Section padding */
+  .statistics-section,
+  .features-section,
+  .about-section,
+  .snapshots-section,
+  .steps-section,
+  .news-section,
+  .reports-section,
+  .cta-section {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  /* Footer */
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-  .footer-bottom-inner { flex-direction: column; text-align: center; }
+  .footer-bottom-inner { flex-direction: column; text-align: center; gap: 12px; }
   .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
 }
 

@@ -764,178 +764,223 @@
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
+  /* Stack map on top, sidebar below — use dvh for Android Chrome */
   .dashboard-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 45vh 1fr;
-    height: 100vh;
-  }
-
-  .sidebar {
-    order: 2;
-    height: auto;
-    max-height: 55vh;
-    border-right: none;
-    border-top: 1px solid var(--glass-border);
+    grid-template-rows: 40vh 1fr;
+    height: 100dvh;
+    height: 100vh; /* fallback */
   }
 
   .map-area {
     order: 1;
-    height: 45vh;
+    height: 40vh;
+    min-height: 200px;
   }
 
-  .sidebar-brand {
-    padding: 14px 16px 0;
-  }
-
-  .sidebar-brand h2 {
-    font-size: 1.1rem;
-  }
-
-  .user-card {
-    margin: 12px 16px;
-    padding: 12px;
-  }
-
-  .sidebar-nav {
-    padding: 0 16px;
-    gap: 4px;
-    flex-direction: row;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .sidebar-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .sidebar-nav .nav-btn {
-    white-space: nowrap;
-    flex-shrink: 0;
-    padding: 8px 14px;
-    font-size: 0.75rem;
-  }
-
-  .feed-section {
-    padding: 0 16px 16px;
-  }
-
-  .report-overlay {
-    width: calc(100% - 24px);
-    left: 12px;
-    bottom: 12px;
-    max-height: 50vh;
+  /* Sidebar: scrollable, NO max-height cap (so feed is visible) */
+  .sidebar {
+    order: 2;
+    height: auto;
+    max-height: none;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-right: none;
+    border-top: 2px solid var(--glass-border);
   }
 
-  .report-overlay .report-form {
+  /* Compact branding */
+  .sidebar-brand { padding: 12px 16px 0; }
+  .sidebar-brand h2 { font-size: 1.05rem; }
+
+  /* Tight user card */
+  .user-card {
+    margin: 10px 16px;
+    padding: 10px;
     gap: 10px;
   }
 
-  .report-overlay .input-field {
-    padding: 10px 12px;
-    font-size: 0.8rem;
-  }
+  .user-avatar { width: 34px; height: 34px; font-size: 0.75rem; }
+  .user-details h3 { font-size: 0.82rem; }
 
-  .map-controls {
-    top: 10px;
-    right: 10px;
+  /* Stats: 2x2 grid */
+  .sidebar-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 16px 12px;
     gap: 6px;
   }
 
-  .map-controls .map-btn {
-    padding: 8px 12px;
-    font-size: 0.72rem;
+  .mini-stat { padding: 8px; }
+  .mini-stat-value { font-size: 0.95rem; }
+  .mini-stat-label { font-size: 0.55rem; }
+
+  /* Nav: horizontal scrollable pills */
+  .sidebar-nav {
+    padding: 0 16px;
+    margin-bottom: 6px;
   }
 
-  .cc-card {
-    padding: 14px;
-  }
-
-  .cc-header {
-    flex-wrap: wrap;
+  .sidebar-nav ul {
+    display: flex;
     gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
   }
 
-  .cc-actions {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .sidebar-nav ul::-webkit-scrollbar { display: none; }
 
-  .cc-actions .btn-sm {
-    padding: 6px 12px;
-    font-size: 0.72rem;
-  }
+  .nav-item { flex-shrink: 0; }
 
-  .status-select {
+  .nav-item a {
+    padding: 8px 14px;
     font-size: 0.75rem;
-    padding: 6px 10px;
+    white-space: nowrap;
+    gap: 6px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--glass-border);
   }
 
-  .stats-bar {
-    flex-wrap: wrap;
+  .nav-item.active a { border-color: var(--accent); }
+
+  .nav-item .nav-icon svg { width: 13px; height: 13px; }
+
+  /* Feed: visible and scrollable */
+  .sidebar-feed-title { padding: 10px 16px 6px; font-size: 0.65rem; }
+
+  .sidebar-feed {
+    padding: 0 16px 12px;
+    min-height: 100px;
+    max-height: none;
+  }
+
+  /* Complaint cards: touch-friendly */
+  .complaint-card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .complaint-card:hover { transform: none; }
+
+  .cc-category { font-size: 0.82rem; }
+  .cc-desc { font-size: 0.75rem; }
+
+  .cc-header { flex-wrap: wrap; gap: 4px; }
+  .cc-header small { font-size: 0.65rem; }
+  .cc-image-thumb { height: 80px; }
+
+  /* Authority actions: STACK vertically, 44px min touch targets */
+  .cc-actions {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
   }
 
-  .stat-item {
-    min-width: unset;
-    flex: 1 1 auto;
+  .cc-actions select {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    min-height: 44px;
+    width: 100%;
   }
+
+  .cc-actions .btn-sm {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Severity picker inside authority cards */
+  .severity-picker,
+  .severity-select {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.82rem;
+  }
+
+  /* Status select in complaint card */
+  .status-select {
+    font-size: 0.82rem;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  /* Sidebar footer */
+  .sidebar-footer { padding: 10px 16px; }
+  .sidebar-footer .btn {
+    padding: 10px;
+    font-size: 0.75rem;
+    min-height: 40px;
+  }
+
+  /* Map controls */
+  .map-controls { top: 8px; right: 8px; gap: 6px; }
+  .map-controls .map-btn {
+    padding: 8px 10px;
+    font-size: 0.7rem;
+    min-height: 36px;
+  }
+
+  /* Report form overlay */
+  .report-overlay {
+    width: calc(100% - 20px);
+    left: 10px;
+    bottom: 10px;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .report-overlay h3 { font-size: 0.95rem; }
+
+  .report-form { gap: 10px; }
+  .report-form label { font-size: 0.72rem; }
+  .report-form .input-field {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    min-height: 42px;
+  }
+
+  .report-form-buttons { gap: 8px; }
+  .report-form-buttons .btn {
+    min-height: 42px;
+    font-size: 0.78rem;
+  }
+
+  /* Search */
+  .search-bar { max-width: 200px; }
+  .search-input { font-size: 0.78rem; }
+
+  /* Stats bar in feed */
+  .stats-bar { flex-wrap: wrap; gap: 8px; }
+  .stat-item { min-width: unset; flex: 1 1 auto; }
 }
 
 @media (max-width: 480px) {
   .dashboard-layout {
-    grid-template-rows: 40vh 1fr;
+    grid-template-rows: 35vh 1fr;
   }
 
-  .map-area {
-    height: 40vh;
-  }
+  .map-area { height: 35vh; min-height: 180px; }
 
-  .sidebar {
-    max-height: 60vh;
-  }
+  .sidebar-brand h2 { font-size: 0.9rem; }
 
-  .sidebar-brand h2 {
-    font-size: 0.95rem;
-  }
+  .user-card { margin: 8px 12px; padding: 8px; }
+  .user-avatar { width: 28px; height: 28px; font-size: 0.65rem; }
+  .user-details h3 { font-size: 0.75rem; }
 
-  .user-card {
-    margin: 8px 12px;
-    padding: 10px;
-    gap: 8px;
-  }
-
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.7rem;
-  }
-
-  .user-name {
-    font-size: 0.8rem;
-  }
-
-  .user-role {
-    font-size: 0.65rem;
-  }
-
-  .cc-card {
-    padding: 12px;
-  }
-
-  .cc-title {
-    font-size: 0.85rem;
-  }
-
-  .cc-desc {
-    font-size: 0.78rem;
-  }
+  .sidebar-stats { padding: 0 12px 10px; }
+  .sidebar-nav { padding: 0 12px; }
+  .sidebar-feed { padding: 0 12px 12px; }
+  .sidebar-footer { padding: 8px 12px; }
 
   .report-overlay {
-    width: calc(100% - 16px);
-    left: 8px;
-    bottom: 8px;
-    padding: 16px;
+    width: calc(100% - 12px);
+    left: 6px;
+    bottom: 6px;
+    padding: 14px;
   }
 }
