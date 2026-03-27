@@ -7,11 +7,11 @@
   <meta name="description" content="CivicLens Dashboard — View, report, and track civic issues on an interactive map." />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script type="module" crossorigin src="./assets/dashboard-5SwZyFjw.js"></script>
+  <script type="module" crossorigin src="./assets/dashboard-D1yRpsxj.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/supabase-DAXHF4Ye.js">
   <link rel="modulepreload" crossorigin href="./assets/notifications-C4PrM5w5.js">
   <link rel="stylesheet" crossorigin href="./assets/supabase-DqwK0Drr.css">
-  <link rel="stylesheet" crossorigin href="./assets/dashboard-1v0alzjm.css">
+  <link rel="stylesheet" crossorigin href="./assets/dashboard-EUquazi7.css">
 </head>
 <body>
 
@@ -155,6 +155,53 @@
       </div>
 
     </main>
+
+    <!-- ═══ COMPLAINT DETAIL MODAL ═══ -->
+    <div class="detail-modal-overlay hidden" id="detail-modal">
+      <div class="detail-modal">
+        <button class="detail-modal-close" id="detail-modal-close" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div class="detail-modal-body">
+          <!-- Image -->
+          <div class="detail-image-section hidden" id="detail-image-section">
+            <img id="detail-image" alt="Evidence photo" />
+          </div>
+
+          <!-- Info -->
+          <div class="detail-info-section">
+            <div class="detail-top-row">
+              <span class="badge" id="detail-badge"></span>
+              <span class="detail-date" id="detail-date"></span>
+            </div>
+
+            <h2 class="detail-category" id="detail-category"></h2>
+
+            <div class="detail-description" id="detail-description"></div>
+
+            <div class="detail-meta">
+              <div class="detail-meta-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span id="detail-location"></span>
+              </div>
+              <div class="detail-meta-item hidden" id="detail-severity-display">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span id="detail-severity-text"></span>
+              </div>
+            </div>
+
+            <!-- Actions container filled by JS -->
+            <div class="detail-actions" id="detail-actions"></div>
+
+            <button class="btn btn-ghost btn-sm detail-locate-btn" id="detail-locate-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              View on Map
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
