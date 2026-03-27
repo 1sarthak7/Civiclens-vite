@@ -5,7 +5,7 @@
 /* ─── LAYOUT ─── */
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 2fr 3fr;
   height: 100vh;
   overflow: hidden;
   background: var(--bg-deep);
@@ -24,14 +24,14 @@
 
 /* Brand */
 .sidebar-brand {
-  padding: 24px 24px 0;
+  padding: 14px 16px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .sidebar-brand h2 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 900;
   color: var(--text-primary);
   letter-spacing: -0.5px;
@@ -41,19 +41,19 @@
 
 /* User profile */
 .user-card {
-  margin: 20px 24px;
-  padding: 16px;
+  margin: 10px 16px;
+  padding: 10px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .user-avatar {
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   background: linear-gradient(135deg, var(--accent), #4988C4);
   border-radius: 50%;
   display: flex;
@@ -61,14 +61,14 @@
   justify-content: center;
   font-weight: 800;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   flex-shrink: 0;
 }
 
 .user-details h3 {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .user-role {
@@ -93,16 +93,16 @@
 /* Stats Row */
 .sidebar-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 0 24px 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 0 16px 10px;
 }
 
 .mini-stat {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 6px 4px;
   text-align: center;
   transition: all 0.2s;
 }
@@ -112,16 +112,16 @@
 }
 
 .mini-stat-value {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--text-primary);
   display: block;
 }
 
 .mini-stat-label {
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   color: var(--text-dim);
   font-weight: 600;
 }
@@ -132,8 +132,8 @@
 
 /* Navigation */
 .sidebar-nav {
-  padding: 0 16px;
-  margin-bottom: 8px;
+  padding: 0 12px;
+  margin-bottom: 4px;
 }
 
 .sidebar-nav ul {
@@ -143,11 +143,11 @@
 .nav-item a {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 7px 12px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   transition: all 0.2s;
   cursor: pointer;
@@ -171,8 +171,8 @@
 
 /* Complaint Feed */
 .sidebar-feed-title {
-  padding: 16px 24px 8px;
-  font-size: 0.7rem;
+  padding: 8px 16px 4px;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -279,7 +279,7 @@
 
 /* Sidebar Footer */
 .sidebar-footer {
-  padding: 16px 24px;
+  padding: 10px 16px;
   border-top: 1px solid var(--glass-border);
   display: flex;
   gap: 8px;
