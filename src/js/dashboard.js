@@ -205,10 +205,10 @@ function renderComplaints(complaints) {
       ${renderActions(issue)}
     `;
 
-    // Click card to fly to marker
-    card.addEventListener('click', () => {
-      map.flyTo([issue.lat, issue.lng], 16);
-      marker.openPopup();
+    // Click card to open detail modal (stop if they clicked an action button/select)
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.cc-actions') || e.target.closest('select') || e.target.closest('button') || e.target.closest('.severity-pill')) return;
+      openDetailModal(issue, marker);
     });
 
     listContainer.appendChild(card);
@@ -256,6 +256,122 @@ function renderActions(issue) {
   }
 
   // Show severity badge on resolved complaints
+  if (issue.severity && issue.status === 'Resolved') {
+    const sev = SEVERITY_OPTIONS.find(s => s.key === issue.severity);
+    if (sev) {
+      return `<div class="cc-severity-badge" style="--sev-color: ${sev.color}">${sev.icon} ${sev.label} severity</div>`;
+    }
+  }
+
+  return '';
+}
+
+// ─── Detail Modal ───
+function openDetailModal(issue, marker) {
+  const modal = document.getElementById('detail-modal');
+  if (!modal) return;
+
+  // Badge
+  const badgeEl = document.getElementById('detail-badge');
+  badgeEl.className = `badge badge-${getStatusClass(issue.status)}`;
+  badgeEl.textContent = issue.status;
+
+  // Date
+  document.getElementById('detail-date').textContent = formatDate(issue.created_at);
+
+  // Category
+  document.getElementById('detail-category').textContent = `${getCategoryEmoji(issue.category)} ${issue.category}`;
+
+  // Description — full text, no truncation
+  document.getElementById('detail-description').textContent = issue.description;
+
+  // Location
+  document.getElementById('detail-location').textContent = `Lat: ${issue.lat.toFixed(5)}, Lng: ${issue.lng.toFixed(5)}`;
+
+  // Image
+  const imgSection = document.getElementById('detail-image-section');
+  const imgEl = document.getElementById('detail-image');
+  if (issue.image_url) {
+    imgEl.src = issue.image_url;
+    imgSection.classList.remove('hidden');
+  } else {
+    imgSection.classList.add('hidden');
+  }
+
+  // Severity display
+  const sevDisplay = document.getElementById('detail-severity-display');
+  const sevText = document.getElementById('detail-severity-text');
+  if (issue.severity) {
+    const sev = SEVERITY_OPTIONS.find(s => s.key === issue.severity);
+    if (sev) {
+      sevText.textContent = `${sev.icon} ${sev.label} severity`;
+      sevDisplay.classList.remove('hidden');
+    } else {
+      sevDisplay.classList.add('hidden');
+    }
+  } else {
+    sevDisplay.classList.add('hidden');
+  }
+
+  // Actions
+  const actionsContainer = document.getElementById('detail-actions');
+  actionsContainer.innerHTML = renderDetailActions(issue);
+
+  // View on Map button
+  const locateBtn = document.getElementById('detail-locate-btn');
+  locateBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    map.flyTo([issue.lat, issue.lng], 16);
+    if (marker) marker.openPopup();
+  };
+
+  // Show modal
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+  const modal = document.getElementById('detail-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+}
+
+function renderDetailActions(issue) {
+  if (currentUser.role === 'citizen' && issue.status === 'Awaiting Confirmation') {
+    return `
+      <button class="btn btn-primary btn-full detail-confirm-btn" data-id="${issue.id}">
+        Confirm Resolution
+      </button>
+    `;
+  }
+
+  if (currentUser.role === 'authority' && issue.status !== 'Resolved') {
+    const severityPills = SEVERITY_OPTIONS.map(s => `
+      <label class="severity-pill" data-severity="${s.key}" title="${s.desc}">
+        <input type="radio" name="detail-severity-${issue.id}" value="${s.key}" ${issue.severity === s.key ? 'checked' : ''} />
+        <span class="severity-pill-inner" style="--sev-color: ${s.color}">${s.icon} ${s.label}</span>
+      </label>
+    `).join('');
+
+    return `
+      <div class="severity-picker">
+        <span class="severity-picker-label">Severity</span>
+        <div class="severity-pills" data-complaint-id="${issue.id}">
+          ${severityPills}
+        </div>
+      </div>
+      <select class="status-select detail-status-select" data-id="${issue.id}">
+        <option value="" disabled selected>Update Status</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Awaiting Confirmation">Work Done</option>
+        <option value="Resolved">Resolved</option>
+      </select>
+    `;
+  }
+
   if (issue.severity && issue.status === 'Resolved') {
     const sev = SEVERITY_OPTIONS.find(s => s.key === issue.severity);
     if (sev) {
@@ -346,6 +462,35 @@ function setupEventListeners() {
     if (btn) {
       await updateComplaintStatus(btn.dataset.id, 'Resolved');
     }
+  });
+
+  // Detail modal: close
+  document.getElementById('detail-modal-close')?.addEventListener('click', closeDetailModal);
+  document.getElementById('detail-modal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeDetailModal();
+  });
+
+  // Detail modal: delegated actions
+  document.getElementById('detail-actions')?.addEventListener('change', async (e) => {
+    if (e.target.classList.contains('detail-status-select')) {
+      const id = e.target.dataset.id;
+      const newStatus = e.target.value;
+      closeDetailModal();
+      await updateComplaintStatus(id, newStatus);
+    }
+  });
+
+  document.getElementById('detail-actions')?.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.detail-confirm-btn');
+    if (btn) {
+      closeDetailModal();
+      await updateComplaintStatus(btn.dataset.id, 'Resolved');
+    }
+  });
+
+  // ESC key to close modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDetailModal();
   });
 }
 
