@@ -938,21 +938,21 @@
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
-  /* Stack map on top, sidebar below — use dvh for Android Chrome */
+  /* Stack map on top, sidebar below — shrink map to 30vh */
   .dashboard-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 40vh 1fr;
+    grid-template-rows: 30vh 1fr;
     height: 100dvh;
     height: 100vh; /* fallback */
   }
 
   .map-area {
     order: 1;
-    height: 40vh;
-    min-height: 200px;
+    height: 30vh;
+    min-height: 160px;
   }
 
-  /* Sidebar: scrollable, NO max-height cap (so feed is visible) */
+  /* Sidebar: scrollable, takes remaining 70vh */
   .sidebar {
     order: 2;
     height: auto;
@@ -963,44 +963,45 @@
     border-top: 2px solid var(--glass-border);
   }
 
-  /* Compact branding */
-  .sidebar-brand { padding: 12px 16px 0; }
-  .sidebar-brand h2 { font-size: 1.05rem; }
+  /* Ultra-compact branding */
+  .sidebar-brand { padding: 8px 12px 0; }
+  .sidebar-brand h2 { font-size: 0.95rem; }
 
-  /* Tight user card */
+  /* Minimal user card */
   .user-card {
-    margin: 10px 16px;
-    padding: 10px;
-    gap: 10px;
+    margin: 6px 12px;
+    padding: 8px;
+    gap: 8px;
   }
 
-  .user-avatar { width: 34px; height: 34px; font-size: 0.75rem; }
-  .user-details h3 { font-size: 0.82rem; }
+  .user-avatar { width: 28px; height: 28px; font-size: 0.65rem; }
+  .user-details h3 { font-size: 0.78rem; }
+  .user-role { font-size: 0.55rem; padding: 1px 6px; }
 
-  /* Stats: 2x2 grid */
+  /* Stats: single row, 4 columns — minimal height */
   .sidebar-stats {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 0 16px 12px;
-    gap: 6px;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 12px 6px;
+    gap: 4px;
   }
 
-  .mini-stat { padding: 8px; }
-  .mini-stat-value { font-size: 0.95rem; }
-  .mini-stat-label { font-size: 0.55rem; }
+  .mini-stat { padding: 4px 2px; }
+  .mini-stat-value { font-size: 0.85rem; }
+  .mini-stat-label { font-size: 0.45rem; letter-spacing: 0.2px; }
 
-  /* Nav: horizontal scrollable pills */
+  /* Nav: compact horizontal scrollable pills */
   .sidebar-nav {
-    padding: 0 16px;
-    margin-bottom: 6px;
+    padding: 0 12px;
+    margin-bottom: 4px;
   }
 
   .sidebar-nav ul {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
   }
 
   .sidebar-nav ul::-webkit-scrollbar { display: none; }
@@ -1008,24 +1009,24 @@
   .nav-item { flex-shrink: 0; }
 
   .nav-item a {
-    padding: 8px 14px;
-    font-size: 0.75rem;
+    padding: 6px 10px;
+    font-size: 0.7rem;
     white-space: nowrap;
-    gap: 6px;
+    gap: 4px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--glass-border);
   }
 
   .nav-item.active a { border-color: var(--accent); }
 
-  .nav-item .nav-icon svg { width: 13px; height: 13px; }
+  .nav-item .nav-icon svg { width: 12px; height: 12px; }
 
-  /* Feed: visible and scrollable */
-  .sidebar-feed-title { padding: 10px 16px 6px; font-size: 0.65rem; }
+  /* Feed: visible and given maximum room */
+  .sidebar-feed-title { padding: 6px 12px 3px; font-size: 0.6rem; }
 
   .sidebar-feed {
-    padding: 0 16px 12px;
-    min-height: 100px;
+    padding: 0 12px 10px;
+    min-height: 120px;
     max-height: none;
   }
 
@@ -1152,21 +1153,24 @@
 
 @media (max-width: 480px) {
   .dashboard-layout {
-    grid-template-rows: 35vh 1fr;
+    grid-template-rows: 25vh 1fr;
   }
 
-  .map-area { height: 35vh; min-height: 180px; }
+  .map-area { height: 25vh; min-height: 140px; }
 
-  .sidebar-brand h2 { font-size: 0.9rem; }
+  .sidebar-brand h2 { font-size: 0.85rem; }
 
-  .user-card { margin: 8px 12px; padding: 8px; }
-  .user-avatar { width: 28px; height: 28px; font-size: 0.65rem; }
-  .user-details h3 { font-size: 0.75rem; }
+  .user-card { margin: 4px 10px; padding: 6px; gap: 6px; }
+  .user-avatar { width: 24px; height: 24px; font-size: 0.6rem; }
+  .user-details h3 { font-size: 0.72rem; }
 
-  .sidebar-stats { padding: 0 12px 10px; }
-  .sidebar-nav { padding: 0 12px; }
-  .sidebar-feed { padding: 0 12px 12px; }
-  .sidebar-footer { padding: 8px 12px; }
+  .sidebar-stats { padding: 0 10px 4px; gap: 3px; }
+  .mini-stat { padding: 3px 2px; }
+  .mini-stat-value { font-size: 0.78rem; }
+
+  .sidebar-nav { padding: 0 10px; }
+  .sidebar-feed { padding: 0 10px 10px; }
+  .sidebar-footer { padding: 6px 10px; }
 
   .report-overlay {
     width: calc(100% - 12px);
