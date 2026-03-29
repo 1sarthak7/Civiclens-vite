@@ -2,7 +2,7 @@
 // CIVIC LENS — Auth Page Logic
 // ═══════════════════════════════════════════════════════════
 
-import { signIn, signUp } from './supabase.js';
+import { supabase, signIn, signUp } from './supabase.js';
 import { showToast } from './notifications.js';
 
 const authForm = document.getElementById('auth-form');
@@ -115,3 +115,67 @@ window.addEventListener('DOMContentLoaded', () => {
     toggleBtn.click();
   }
 });
+
+// ═══════════════════════════════════════════════════════════
+// LIVE STATS — Fetch real data from Supabase for auth panel
+// ═══════════════════════════════════════════════════════════
+
+async function loadLiveStats() {
+  try {
+    // 1. Issues Resolved — count complaints with status 'Resolved'
+    const { count: resolvedCount } = await supabase
+      .from('complaints')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'Resolved');
+
+    // 2. Active Citizens — count profiles with role 'citizen'
+    const { count: citizenCount } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('role', 'citizen');
+
+    // 3. Total Credits Awarded — sum all credits across profiles
+    const { data: creditRows } = await supabase
+      .from('profiles')
+      .select('credits');
+
+    const totalCredits = creditRows
+      ? creditRows.reduce((sum, row) => sum + (row.credits || 0), 0)
+      : 0;
+
+    // Animate the counters
+    animateStatCounter('stat-resolved-count', resolvedCount || 0);
+    animateStatCounter('stat-citizens-count', citizenCount || 0);
+    animateStatCounter('stat-credits-count', totalCredits);
+
+  } catch (err) {
+    console.warn('Could not load live stats:', err);
+    // Silently fail — stats will just show "—"
+  }
+}
+
+function animateStatCounter(elementId, target) {
+  const el = document.getElementById(elementId);
+  if (!el || target === 0) {
+    if (el) el.textContent = '0';
+    return;
+  }
+
+  let current = 0;
+  const duration = 1500;
+  const steps = 50;
+  const increment = target / steps;
+  const stepTime = duration / steps;
+
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = Math.round(current).toLocaleString('en-IN');
+  }, stepTime);
+}
+
+// Fire stats fetch on load (non-blocking, doesn't affect auth flow)
+loadLiveStats();

@@ -15,22 +15,149 @@
 
     <!-- ═══ LEFT: VISUAL ═══ -->
     <div class="auth-visual">
-      <div class="auth-float-badge" style="top:18%; left:12%;"> Report submitted</div>
-      <div class="auth-float-badge" style="bottom:22%; right:8%;">Issue resolved</div>
-      <div class="auth-float-badge" style="bottom:12%; left:18%;"> Status updated</div>
 
-      <div class="auth-visual-content">
-        <div class="auth-visual-logo">
-          <svg viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
-            <circle cx="14" cy="14" r="8" stroke="#9FB3DF" stroke-width="1.5"/>
-            <circle cx="14" cy="14" r="2.5" fill="#9FB3DF"/>
-            <line x1="14" y1="1" x2="14" y2="8" stroke="#9FB3DF" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          CivicLens<span style="color: var(--accent);">.</span>
+      <!-- Animated background grid -->
+      <div class="auth-bg-grid"></div>
+
+      <!-- Floating stat cards -->
+      <div class="auth-float-card auth-float-card--1">
+        <div class="afc-icon afc-icon--green">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h2 class="text-gradient">Your City,<br/>Your Voice.</h2>
-        <p>Empowering citizens to report problems, track progress, and hold authorities accountable — transparently.</p>
+        <div class="afc-text">
+          <span class="afc-label">Issues Resolved</span>
+          <span class="afc-value" id="stat-resolved-count">—</span>
+        </div>
+      </div>
+
+      <div class="auth-float-card auth-float-card--2">
+        <div class="afc-icon afc-icon--blue">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="afc-text">
+          <span class="afc-label">Active Citizens</span>
+          <span class="afc-value" id="stat-citizens-count">—</span>
+        </div>
+      </div>
+
+      <div class="auth-float-card auth-float-card--3">
+        <div class="afc-icon afc-icon--amber">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        </div>
+        <div class="afc-text">
+          <span class="afc-label">Credits Awarded</span>
+          <span class="afc-value" id="stat-credits-count">—</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="auth-visual-content">
+        <!-- Logo with actual CivicLens branding -->
+        <div class="auth-visual-logo">
+          <img src="/Civiclenslogo.png" alt="CivicLens Logo" class="auth-logo-img" />
+        </div>
+
+        <h2 class="auth-headline">Your City,<br/><span class="text-gradient">Your Voice.</span></h2>
+        <p class="auth-tagline">Empowering citizens to report problems, track progress, and hold authorities accountable — transparently.</p>
+
+        <!-- Animated civic illustration -->
+        <div class="auth-illustration">
+          <svg viewBox="0 0 320 180" fill="none" class="civic-scene">
+            <!-- Ground -->
+            <rect x="0" y="150" width="320" height="30" rx="4" fill="#f0f2f5"/>
+            <line x1="0" y1="150" x2="320" y2="150" stroke="#e5e7eb" stroke-width="1"/>
+
+            <!-- Buildings -->
+            <rect x="20" y="70" width="40" height="80" rx="3" fill="#1a3c6e" opacity="0.12" class="building building--1"/>
+            <rect x="25" y="78" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="40" y="78" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="25" y="92" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="40" y="92" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="25" y="106" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="40" y="106" width="10" height="8" rx="1" fill="#1a3c6e" opacity="0.2"/>
+
+            <rect x="70" y="50" width="35" height="100" rx="3" fill="#2a5298" opacity="0.12" class="building building--2"/>
+            <rect x="75" y="58" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="87" y="58" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="75" y="70" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="87" y="70" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="75" y="82" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="87" y="82" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="75" y="94" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+            <rect x="87" y="94" width="8" height="6" rx="1" fill="#2a5298" opacity="0.2"/>
+
+            <!-- Government building (center) -->
+            <rect x="120" y="80" width="80" height="70" rx="2" fill="#1a3c6e" opacity="0.15" class="building building--govt"/>
+            <polygon points="160,45 115,80 205,80" fill="#1a3c6e" opacity="0.12"/>
+            <rect x="130" y="80" width="4" height="50" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="145" y="80" width="4" height="50" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="160" y="80" width="4" height="50" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="175" y="80" width="4" height="50" fill="#1a3c6e" opacity="0.2"/>
+            <rect x="190" y="80" width="4" height="50" fill="#1a3c6e" opacity="0.2"/>
+            <!-- Dome -->
+            <ellipse cx="160" cy="50" rx="20" ry="10" fill="#1a3c6e" opacity="0.1"/>
+            <circle cx="160" cy="42" r="3" fill="#f47920" opacity="0.5" class="dome-light"/>
+
+            <rect x="215" y="60" width="35" height="90" rx="3" fill="#1a3c6e" opacity="0.1" class="building building--3"/>
+            <rect x="220" y="68" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+            <rect x="237" y="68" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+            <rect x="220" y="80" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+            <rect x="237" y="80" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+            <rect x="220" y="92" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+            <rect x="237" y="92" width="8" height="6" rx="1" fill="#1a3c6e" opacity="0.15"/>
+
+            <rect x="260" y="90" width="40" height="60" rx="3" fill="#2a5298" opacity="0.1" class="building building--4"/>
+            <rect x="265" y="98" width="10" height="8" rx="1" fill="#2a5298" opacity="0.15"/>
+            <rect x="280" y="98" width="10" height="8" rx="1" fill="#2a5298" opacity="0.15"/>
+            <rect x="265" y="112" width="10" height="8" rx="1" fill="#2a5298" opacity="0.15"/>
+            <rect x="280" y="112" width="10" height="8" rx="1" fill="#2a5298" opacity="0.15"/>
+
+            <!-- Road markings -->
+            <line x1="0" y1="162" x2="20" y2="162" stroke="#d1d5db" stroke-width="2" stroke-dasharray="8 6"/>
+            <line x1="35" y1="162" x2="100" y2="162" stroke="#d1d5db" stroke-width="2" stroke-dasharray="8 6"/>
+            <line x1="115" y1="162" x2="200" y2="162" stroke="#d1d5db" stroke-width="2" stroke-dasharray="8 6"/>
+            <line x1="215" y1="162" x2="320" y2="162" stroke="#d1d5db" stroke-width="2" stroke-dasharray="8 6"/>
+
+            <!-- Location pins (animated) -->
+            <g class="pin pin--1">
+              <path d="M47 60 C47 55, 53 55, 53 60 C53 63, 50 68, 50 68 C50 68, 47 63, 47 60Z" fill="#ef4444" opacity="0.9"/>
+              <circle cx="50" cy="59" r="2" fill="white"/>
+            </g>
+            <g class="pin pin--2">
+              <path d="M140 38 C140 33, 146 33, 146 38 C146 41, 143 46, 143 46 C143 46, 140 41, 140 38Z" fill="#f59e0b" opacity="0.9"/>
+              <circle cx="143" cy="37" r="2" fill="white"/>
+            </g>
+            <g class="pin pin--3">
+              <path d="M270 78 C270 73, 276 73, 276 78 C276 81, 273 86, 273 86 C273 86, 270 81, 270 78Z" fill="#059669" opacity="0.9"/>
+              <circle cx="273" cy="77" r="2" fill="white"/>
+            </g>
+
+            <!-- Data flow lines (animated) -->
+            <path d="M50 60 Q100 30 143 38" stroke="#1a3c6e" stroke-width="1" fill="none" opacity="0.15" stroke-dasharray="4 4" class="data-line data-line--1"/>
+            <path d="M143 38 Q200 50 273 78" stroke="#1a3c6e" stroke-width="1" fill="none" opacity="0.15" stroke-dasharray="4 4" class="data-line data-line--2"/>
+
+            <!-- Pulse rings around pins -->
+            <circle cx="50" cy="59" r="6" fill="none" stroke="#ef4444" stroke-width="1" opacity="0" class="pulse-ring pulse-ring--1"/>
+            <circle cx="143" cy="37" r="6" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0" class="pulse-ring pulse-ring--2"/>
+            <circle cx="273" cy="77" r="6" fill="none" stroke="#059669" stroke-width="1" opacity="0" class="pulse-ring pulse-ring--3"/>
+          </svg>
+        </div>
+
+        <!-- Feature pills -->
+        <div class="auth-features">
+          <div class="auth-feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Live Map Tracking
+          </div>
+          <div class="auth-feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+            Earn Civic Credits
+          </div>
+          <div class="auth-feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Real-time Resolve
+          </div>
+        </div>
       </div>
     </div>
 
