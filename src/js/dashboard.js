@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// CIVIC LENS — Dashboard Logic
+// CIVIC LENS — Dashboard Logic (v2 — Voting + Reject/Duplicate)
 // ═══════════════════════════════════════════════════════════
 
 import L from 'leaflet';
@@ -18,6 +18,8 @@ let currentUser = null;
 let heatmapLayer = null;
 let heatmapActive = false;
 let markersLayer = null;
+let userVotes = {};       // { complaintId: 'up' | 'down' }
+let allComplaints = [];   // cached for duplicate search
 
 // ─── Custom SVG Markers ───
 function createSvgIcon(color, pulseColor) {
@@ -43,6 +45,7 @@ const icons = {
   'In Progress':          createSvgIcon('#1C4D8D', '#4988C4'),
   'Awaiting Confirmation': createSvgIcon('#8b5cf6', '#a78bfa'),
   Resolved:               createSvgIcon('#059669', '#34d399'),
+  Rejected:               createSvgIcon('#dc2626', '#f87171'),
   Default:                createSvgIcon('#1C4D8D', '#4988C4'),
 };
 
@@ -57,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupProfile();
   setupRoleViews();
   initMap();
+  await loadUserVotes();
   await loadComplaints();
   await loadUserCredits();
   setupEventListeners();
@@ -134,6 +138,295 @@ function placeSelectionMarker(latlng) {
   if (coords) coords.textContent = `Lat: ${latlng.lat.toFixed(5)}, Lng: ${latlng.lng.toFixed(5)}`;
 }
 
+// ═══════════════════════════════════════════════════════════
+// VOTING SYSTEM
+// ═══════════════════════════════════════════════════════════
+
+async function loadUserVotes() {
+  if (!currentUser) return;
+  const { data } = await supabase
+    .from('complaint_votes')
+    .select('complaint_id, vote_type')
+    .eq('user_id', currentUser.id);
+
+  userVotes = {};
+  if (data) {
+    data.forEach(v => { userVotes[v.complaint_id] = v.vote_type; });
+  }
+}
+
+async function handleVote(complaintId, voteType) {
+  if (!currentUser) return;
+
+  const existing = userVotes[complaintId];
+
+  try {
+    if (existing === voteType) {
+      // Toggle off — remove vote
+      await supabase
+        .from('complaint_votes')
+        .delete()
+        .eq('complaint_id', complaintId)
+        .eq('user_id', currentUser.id);
+
+      delete userVotes[complaintId];
+    } else if (existing) {
+      // Switch vote
+      await supabase
+        .from('complaint_votes')
+        .update({ vote_type: voteType })
+        .eq('complaint_id', complaintId)
+        .eq('user_id', currentUser.id);
+
+      userVotes[complaintId] = voteType;
+    } else {
+      // New vote
+      await supabase
+        .from('complaint_votes')
+        .insert({
+          complaint_id: complaintId,
+          user_id: currentUser.id,
+          vote_type: voteType,
+        });
+
+      userVotes[complaintId] = voteType;
+    }
+
+    // Recalculate & update cached counts
+    await syncVoteCounts(complaintId);
+
+    // Re-render to reflect new vote state
+    await loadComplaints(getCurrentFilter());
+  } catch (err) {
+    console.error('Vote error:', err);
+    showToast('Failed to register vote', 'error');
+  }
+}
+
+async function syncVoteCounts(complaintId) {
+  const { count: upCount } = await supabase
+    .from('complaint_votes')
+    .select('*', { count: 'exact', head: true })
+    .eq('complaint_id', complaintId)
+    .eq('vote_type', 'up');
+
+  const { count: downCount } = await supabase
+    .from('complaint_votes')
+    .select('*', { count: 'exact', head: true })
+    .eq('complaint_id', complaintId)
+    .eq('vote_type', 'down');
+
+  await supabase
+    .from('complaints')
+    .update({ upvotes: upCount || 0, downvotes: downCount || 0 })
+    .eq('id', complaintId);
+}
+
+function getCurrentFilter() {
+  const activeNav = document.querySelector('.nav-item.active');
+  return activeNav?.dataset.filter || 'default';
+}
+
+function renderVoteBar(issue) {
+  const isOwn = issue.user_id === currentUser.id;
+  const currentVote = userVotes[issue.id];
+  const upActive = currentVote === 'up' ? 'active' : '';
+  const downActive = currentVote === 'down' ? 'active' : '';
+  const disabled = isOwn ? 'disabled' : '';
+  const title = isOwn ? 'title="Cannot vote on own complaint"' : '';
+
+  return `
+    <div class="vote-bar">
+      <button class="vote-btn vote-btn--up ${upActive}" data-id="${issue.id}" data-vote="up" ${disabled} ${title}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        <span class="vote-count">${issue.upvotes || 0}</span>
+      </button>
+      <span class="vote-separator"></span>
+      <button class="vote-btn vote-btn--down ${downActive}" data-id="${issue.id}" data-vote="down" ${disabled} ${title}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <span class="vote-count">${issue.downvotes || 0}</span>
+      </button>
+    </div>
+  `;
+}
+
+function renderDetailVoteBar(issue) {
+  const isOwn = issue.user_id === currentUser.id;
+  const currentVote = userVotes[issue.id];
+  const upActive = currentVote === 'up' ? 'active' : '';
+  const downActive = currentVote === 'down' ? 'active' : '';
+  const disabled = isOwn ? 'disabled' : '';
+  const ups = issue.upvotes || 0;
+
+  let summary = '';
+  if (ups > 0) {
+    summary = `<span class="detail-vote-summary">${ups} citizen${ups > 1 ? 's' : ''} also face${ups === 1 ? 's' : ''} this issue</span>`;
+  }
+
+  return `
+    <div class="detail-vote-bar" id="detail-vote-bar">
+      <button class="detail-vote-btn detail-vote-btn--up ${upActive}" data-id="${issue.id}" data-vote="up" ${disabled}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Upvote (${ups})
+      </button>
+      <button class="detail-vote-btn detail-vote-btn--down ${downActive}" data-id="${issue.id}" data-vote="down" ${disabled}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        Downvote (${issue.downvotes || 0})
+      </button>
+      ${summary}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// REJECT / DUPLICATE SYSTEM
+// ═══════════════════════════════════════════════════════════
+
+function renderRejectPanel(issue) {
+  return `
+    <div class="reject-panel" id="reject-panel-${issue.id}">
+      <div class="reject-panel-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Reject Complaint
+      </div>
+      <div class="reject-field">
+        <label>Reason</label>
+        <select class="reject-reason-select" data-id="${issue.id}">
+          <option value="" disabled selected>Select reason</option>
+          <option value="Duplicate">Duplicate complaint</option>
+          <option value="Invalid">Invalid / False report</option>
+          <option value="Out of jurisdiction">Out of jurisdiction</option>
+          <option value="Insufficient info">Insufficient information</option>
+          <option value="custom">Custom reason...</option>
+        </select>
+      </div>
+      <div class="reject-field reject-custom-field hidden" id="reject-custom-${issue.id}">
+        <label>Custom Reason</label>
+        <textarea class="reject-custom-text" data-id="${issue.id}" placeholder="Type your reason..."></textarea>
+      </div>
+      <div class="reject-field reject-dup-field hidden" id="reject-dup-${issue.id}">
+        <label>Link to Original Complaint</label>
+        <input type="text" class="reject-dup-search" data-id="${issue.id}" placeholder="Search by category or description..." />
+        <div class="dup-search-results" id="dup-results-${issue.id}"></div>
+        <div class="dup-selected hidden" id="dup-selected-${issue.id}">
+          <span class="dup-selected-text"></span>
+          <button class="dup-selected-clear" data-id="${issue.id}">×</button>
+        </div>
+      </div>
+      <div class="reject-actions">
+        <button class="btn-danger-outline reject-confirm-btn" data-id="${issue.id}">Confirm Rejection</button>
+        <button class="btn btn-ghost btn-sm reject-cancel-btn" data-id="${issue.id}">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
+async function handleReject(complaintId) {
+  const panel = document.getElementById(`reject-panel-${complaintId}`);
+  if (!panel) return;
+
+  const reasonSelect = panel.querySelector('.reject-reason-select');
+  const customText = panel.querySelector('.reject-custom-text');
+  let reason = reasonSelect.value;
+
+  if (!reason) {
+    showToast('Please select a rejection reason', 'error');
+    return;
+  }
+
+  if (reason === 'custom') {
+    reason = customText?.value?.trim();
+    if (!reason) {
+      showToast('Please type a custom reason', 'error');
+      return;
+    }
+  }
+
+  // Get duplicate link if selected
+  const dupSelected = document.getElementById(`dup-selected-${complaintId}`);
+  const dupId = dupSelected?.dataset.linkedId || null;
+
+  const updatePayload = {
+    status: 'Rejected',
+    rejection_reason: reason,
+    is_duplicate: reason === 'Duplicate',
+    updated_at: new Date().toISOString(),
+  };
+
+  if (dupId) {
+    updatePayload.duplicate_of = dupId;
+    updatePayload.is_duplicate = true;
+  }
+
+  const { error } = await supabase
+    .from('complaints')
+    .update(updatePayload)
+    .eq('id', complaintId);
+
+  if (error) {
+    showToast('Failed to reject complaint', 'error');
+    console.error(error);
+  } else {
+    showToast(`Complaint rejected: ${reason}`, 'success');
+    closeDetailModal();
+    await loadComplaints(getCurrentFilter());
+  }
+}
+
+function setupDuplicateSearch(complaintId) {
+  const input = document.querySelector(`.reject-dup-search[data-id="${complaintId}"]`);
+  const resultsContainer = document.getElementById(`dup-results-${complaintId}`);
+  const selectedContainer = document.getElementById(`dup-selected-${complaintId}`);
+  if (!input || !resultsContainer) return;
+
+  let debounceTimer = null;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    const query = input.value.trim().toLowerCase();
+
+    if (!query) {
+      resultsContainer.innerHTML = '';
+      return;
+    }
+
+    debounceTimer = setTimeout(() => {
+      const matches = allComplaints.filter(c =>
+        c.id !== complaintId &&
+        c.status !== 'Rejected' &&
+        (c.category.toLowerCase().includes(query) || c.description.toLowerCase().includes(query))
+      ).slice(0, 5);
+
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = '<div class="dup-search-item"><span class="dup-item-desc">No matches found</span></div>';
+        return;
+      }
+
+      resultsContainer.innerHTML = matches.map(c => `
+        <div class="dup-search-item" data-dup-id="${c.id}">
+          <span class="dup-item-cat">${c.category} — ${formatDate(c.created_at)}</span>
+          <span class="dup-item-desc">${c.description}</span>
+        </div>
+      `).join('');
+
+      // Click to select
+      resultsContainer.querySelectorAll('.dup-search-item[data-dup-id]').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.dupId;
+          const cat = item.querySelector('.dup-item-cat').textContent;
+
+          selectedContainer.classList.remove('hidden');
+          selectedContainer.dataset.linkedId = id;
+          selectedContainer.querySelector('.dup-selected-text').textContent = `Linked: ${cat}`;
+
+          resultsContainer.innerHTML = '';
+          input.value = '';
+        });
+      });
+    }, 300);
+  });
+}
+
 // ─── Load Complaints ───
 async function loadComplaints(filterMode = 'default') {
   const listContainer = document.getElementById('complaints-list');
@@ -152,8 +445,9 @@ async function loadComplaints(filterMode = 'default') {
     return;
   }
 
-  updateStats(complaints || []);
-  renderComplaints(complaints || []);
+  allComplaints = complaints || [];
+  updateStats(allComplaints);
+  renderComplaints(allComplaints);
 }
 
 // ─── Render ───
@@ -192,7 +486,7 @@ function renderComplaints(complaints) {
 
     // Sidebar card
     const card = document.createElement('div');
-    card.className = 'complaint-card';
+    card.className = `complaint-card${issue.status === 'Rejected' ? ' complaint-card--rejected' : ''}`;
     card.style.animationDelay = `${index * 0.05}s`;
     card.innerHTML = `
       <div class="cc-header">
@@ -202,12 +496,14 @@ function renderComplaints(complaints) {
       <div class="cc-category">${getCategoryEmoji(issue.category)} ${issue.category}</div>
       <div class="cc-desc">${issue.description}</div>
       ${issue.image_url ? `<img class="cc-image-thumb" src="${issue.image_url}" alt="Evidence" />` : ''}
+      ${renderRejectedInfo(issue)}
+      ${renderVoteBar(issue)}
       ${renderActions(issue)}
     `;
 
     // Click card to open detail modal (stop if they clicked an action button/select)
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.cc-actions') || e.target.closest('select') || e.target.closest('button') || e.target.closest('.severity-pill')) return;
+      if (e.target.closest('.cc-actions') || e.target.closest('select') || e.target.closest('button') || e.target.closest('.severity-pill') || e.target.closest('.vote-bar') || e.target.closest('.reject-panel')) return;
       openDetailModal(issue, marker);
     });
 
@@ -218,7 +514,36 @@ function renderComplaints(complaints) {
   window._heatPoints = heatPoints;
 }
 
+function renderRejectedInfo(issue) {
+  if (issue.status !== 'Rejected') return '';
+
+  let html = '';
+  if (issue.rejection_reason) {
+    html += `
+      <div class="cc-rejected-reason">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        ${issue.rejection_reason}
+      </div>
+    `;
+  }
+  if (issue.is_duplicate && issue.duplicate_of) {
+    const original = allComplaints.find(c => c.id === issue.duplicate_of);
+    if (original) {
+      html += `
+        <div class="cc-duplicate-link" data-dup-target="${issue.duplicate_of}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          Duplicate of: ${original.category} — ${formatDate(original.created_at)}
+        </div>
+      `;
+    }
+  }
+  return html;
+}
+
 function renderActions(issue) {
+  // No actions for rejected complaints
+  if (issue.status === 'Rejected') return '';
+
   if (currentUser.role === 'citizen' && issue.status === 'Awaiting Confirmation') {
     return `
       <div class="cc-actions">
@@ -250,6 +575,7 @@ function renderActions(issue) {
           <option value="In Progress">In Progress</option>
           <option value="Awaiting Confirmation">Work Done</option>
           <option value="Resolved">Resolved</option>
+          <option value="Rejected">❌ Reject Complaint</option>
         </select>
       </div>
     `;
@@ -313,6 +639,18 @@ function openDetailModal(issue, marker) {
     sevDisplay.classList.add('hidden');
   }
 
+  // Vote bar in modal
+  const voteContainer = document.getElementById('detail-vote-container');
+  if (voteContainer) {
+    voteContainer.innerHTML = renderDetailVoteBar(issue);
+  }
+
+  // Rejected info in modal
+  const rejectedContainer = document.getElementById('detail-rejected-info');
+  if (rejectedContainer) {
+    rejectedContainer.innerHTML = renderRejectedInfo(issue);
+  }
+
   // Actions
   const actionsContainer = document.getElementById('detail-actions');
   actionsContainer.innerHTML = renderDetailActions(issue);
@@ -340,6 +678,8 @@ function closeDetailModal() {
 }
 
 function renderDetailActions(issue) {
+  if (issue.status === 'Rejected') return '';
+
   if (currentUser.role === 'citizen' && issue.status === 'Awaiting Confirmation') {
     return `
       <button class="btn btn-primary btn-full detail-confirm-btn" data-id="${issue.id}">
@@ -368,7 +708,9 @@ function renderDetailActions(issue) {
         <option value="In Progress">In Progress</option>
         <option value="Awaiting Confirmation">Work Done</option>
         <option value="Resolved">Resolved</option>
+        <option value="Rejected">❌ Reject Complaint</option>
       </select>
+      <div id="detail-reject-panel" class="hidden"></div>
     `;
   }
 
@@ -448,19 +790,62 @@ function setupEventListeners() {
   // ─── Animated Search Bar ───
   initSearchBar();
 
-  // Delegated events: status updates
+  // ═══ VOTING — Delegated click handlers ═══
+
+  // Vote buttons on sidebar cards
+  document.getElementById('complaints-list')?.addEventListener('click', async (e) => {
+    const voteBtn = e.target.closest('.vote-btn');
+    if (voteBtn && !voteBtn.disabled) {
+      e.stopPropagation();
+      const id = voteBtn.dataset.id;
+      const voteType = voteBtn.dataset.vote;
+      voteBtn.classList.add('bump');
+      setTimeout(() => voteBtn.classList.remove('bump'), 300);
+      await handleVote(id, voteType);
+      return;
+    }
+
+    const btn = e.target.closest('.confirm-btn');
+    if (btn) {
+      await updateComplaintStatus(btn.dataset.id, 'Resolved');
+    }
+
+    // Duplicate link click
+    const dupLink = e.target.closest('.cc-duplicate-link');
+    if (dupLink) {
+      const targetId = dupLink.dataset.dupTarget;
+      const target = allComplaints.find(c => c.id === targetId);
+      if (target) {
+        const marker = markersLayer.getLayers().find(m => {
+          const ll = m.getLatLng();
+          return ll.lat === target.lat && ll.lng === target.lng;
+        });
+        openDetailModal(target, marker);
+      }
+    }
+  });
+
+  // Status updates (with reject handling)
   document.getElementById('complaints-list')?.addEventListener('change', async (e) => {
     if (e.target.classList.contains('status-select')) {
       const id = e.target.dataset.id;
       const newStatus = e.target.value;
-      await updateComplaintStatus(id, newStatus);
-    }
-  });
 
-  document.getElementById('complaints-list')?.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.confirm-btn');
-    if (btn) {
-      await updateComplaintStatus(btn.dataset.id, 'Resolved');
+      if (newStatus === 'Rejected') {
+        // Show reject panel inline
+        const panel = e.target.closest('.cc-actions');
+        if (panel) {
+          // Remove existing reject panel if any
+          const existing = panel.querySelector('.reject-panel');
+          if (existing) existing.remove();
+
+          panel.insertAdjacentHTML('beforeend', renderRejectPanel({ id }));
+          setupRejectPanelListeners(id);
+          e.target.value = ''; // Reset select
+        }
+      } else {
+        await updateComplaintStatus(id, newStatus);
+      }
     }
   });
 
@@ -470,13 +855,35 @@ function setupEventListeners() {
     if (e.target === e.currentTarget) closeDetailModal();
   });
 
+  // Detail modal: vote buttons
+  document.getElementById('detail-modal')?.addEventListener('click', async (e) => {
+    const voteBtn = e.target.closest('.detail-vote-btn');
+    if (voteBtn && !voteBtn.disabled) {
+      const id = voteBtn.dataset.id;
+      const voteType = voteBtn.dataset.vote;
+      await handleVote(id, voteType);
+      return;
+    }
+  });
+
   // Detail modal: delegated actions
   document.getElementById('detail-actions')?.addEventListener('change', async (e) => {
     if (e.target.classList.contains('detail-status-select')) {
       const id = e.target.dataset.id;
       const newStatus = e.target.value;
-      closeDetailModal();
-      await updateComplaintStatus(id, newStatus);
+
+      if (newStatus === 'Rejected') {
+        const panelContainer = document.getElementById('detail-reject-panel');
+        if (panelContainer) {
+          panelContainer.classList.remove('hidden');
+          panelContainer.innerHTML = renderRejectPanel({ id });
+          setupRejectPanelListeners(id);
+        }
+        e.target.value = '';
+      } else {
+        closeDetailModal();
+        await updateComplaintStatus(id, newStatus);
+      }
     }
   });
 
@@ -491,6 +898,54 @@ function setupEventListeners() {
   // ESC key to close modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeDetailModal();
+  });
+}
+
+function setupRejectPanelListeners(complaintId) {
+  const panel = document.getElementById(`reject-panel-${complaintId}`);
+  if (!panel) return;
+
+  // Reason select — show/hide custom & duplicate fields
+  const reasonSelect = panel.querySelector('.reject-reason-select');
+  reasonSelect?.addEventListener('change', (e) => {
+    const val = e.target.value;
+    const customField = document.getElementById(`reject-custom-${complaintId}`);
+    const dupField = document.getElementById(`reject-dup-${complaintId}`);
+
+    if (val === 'custom') {
+      customField?.classList.remove('hidden');
+    } else {
+      customField?.classList.add('hidden');
+    }
+
+    if (val === 'Duplicate') {
+      dupField?.classList.remove('hidden');
+      setupDuplicateSearch(complaintId);
+    } else {
+      dupField?.classList.add('hidden');
+    }
+  });
+
+  // Confirm rejection
+  panel.querySelector('.reject-confirm-btn')?.addEventListener('click', () => {
+    handleReject(complaintId);
+  });
+
+  // Cancel rejection
+  panel.querySelector('.reject-cancel-btn')?.addEventListener('click', () => {
+    panel.remove();
+    // Also hide detail panel container if in modal
+    const detailPanel = document.getElementById('detail-reject-panel');
+    if (detailPanel) detailPanel.classList.add('hidden');
+  });
+
+  // Clear duplicate selection
+  panel.querySelector('.dup-selected-clear')?.addEventListener('click', () => {
+    const selected = document.getElementById(`dup-selected-${complaintId}`);
+    if (selected) {
+      selected.classList.add('hidden');
+      delete selected.dataset.linkedId;
+    }
   });
 }
 
@@ -587,12 +1042,12 @@ async function updateComplaintStatus(id, newStatus) {
   } else {
     showToast(`Status updated to "${newStatus}"`, 'success');
 
-    // Award credits when complaint is resolved
+    // Award credits when complaint is resolved (NOT rejected)
     if (newStatus === 'Resolved') {
       await awardCreditsWithAlgorithm(id);
     }
 
-    await loadComplaints();
+    await loadComplaints(getCurrentFilter());
     await loadUserCredits();
   }
 }
@@ -761,13 +1216,14 @@ function toggleHeatmap() {
 
 // ─── Helpers ───
 function getStatusClass(status) {
-  const map = {
+  const statusMap = {
     Pending: 'pending',
     'In Progress': 'progress',
     'Awaiting Confirmation': 'awaiting',
     Resolved: 'resolved',
+    Rejected: 'rejected',
   };
-  return map[status] || 'pending';
+  return statusMap[status] || 'pending';
 }
 
 function getCategoryEmoji(category) {

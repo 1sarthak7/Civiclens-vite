@@ -1202,3 +1202,397 @@
   .detail-image-section { max-height: 200px; }
   .detail-image-section img { max-height: 200px; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   VOTE BAR — Upvote / Downvote
+   ═══════════════════════════════════════════════════════════ */
+
+.vote-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  font-family: var(--font-sans);
+  line-height: 1;
+}
+
+.vote-btn:hover {
+  background: var(--glass-hover);
+  color: var(--text-secondary);
+}
+
+.vote-btn svg {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.vote-btn:hover svg {
+  transform: scale(1.2);
+}
+
+/* Active upvote */
+.vote-btn--up.active {
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.3);
+  color: #059669;
+}
+
+.vote-btn--up.active svg {
+  transform: scale(1.15);
+}
+
+/* Active downvote */
+.vote-btn--down.active {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.25);
+  color: #dc2626;
+}
+
+.vote-btn--down.active svg {
+  transform: scale(1.15);
+}
+
+/* Vote count animation */
+.vote-btn .vote-count {
+  display: inline;
+  transition: transform 0.2s;
+}
+
+.vote-btn.bump .vote-count {
+  animation: voteBump 0.3s var(--ease-out);
+}
+
+@keyframes voteBump {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+/* Disabled vote (own complaint) */
+.vote-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.vote-btn:disabled:hover {
+  background: var(--glass-bg);
+  color: var(--text-dim);
+}
+
+.vote-btn:disabled:hover svg {
+  transform: scale(1);
+}
+
+.vote-separator {
+  width: 1px;
+  height: 18px;
+  background: var(--glass-border);
+  margin: 0 2px;
+}
+
+/* Vote bar inside detail modal */
+.detail-vote-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.detail-vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  font-family: var(--font-sans);
+}
+
+.detail-vote-btn:hover {
+  background: var(--glass-hover);
+  color: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.detail-vote-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.detail-vote-btn:hover svg {
+  transform: scale(1.15);
+}
+
+.detail-vote-btn--up.active {
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.3);
+  color: #059669;
+}
+
+.detail-vote-btn--down.active {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.25);
+  color: #dc2626;
+}
+
+.detail-vote-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.detail-vote-summary {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REJECT / DUPLICATE PANEL
+   ═══════════════════════════════════════════════════════════ */
+
+.reject-panel {
+  background: rgba(220, 38, 38, 0.04);
+  border: 1px solid rgba(220, 38, 38, 0.12);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideUp 0.3s var(--ease-out);
+}
+
+.reject-panel-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reject-panel-title svg {
+  width: 14px;
+  height: 14px;
+}
+
+.reject-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reject-field label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reject-field select,
+.reject-field input,
+.reject-field textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.reject-field select:focus,
+.reject-field input:focus,
+.reject-field textarea:focus {
+  border-color: #dc2626;
+}
+
+.reject-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.reject-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.reject-actions .btn {
+  flex: 1;
+}
+
+.btn-danger-outline {
+  background: transparent;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #dc2626;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-outline:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: #dc2626;
+}
+
+/* Duplicate search results */
+.dup-search-results {
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+}
+
+.dup-search-item {
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dup-search-item:last-child { border-bottom: none; }
+
+.dup-search-item:hover {
+  background: var(--glass-hover);
+}
+
+.dup-search-item .dup-item-cat {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.78rem;
+}
+
+.dup-search-item .dup-item-desc {
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dup-selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(107, 114, 128, 0.08);
+  border: 1px solid rgba(107, 114, 128, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.dup-selected-clear {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+
+.dup-selected-clear:hover { color: #dc2626; }
+
+/* ─── REJECTED COMPLAINT CARD STYLES ─── */
+.complaint-card--rejected {
+  opacity: 0.7;
+  border-left: 3px solid #dc2626;
+}
+
+.complaint-card--rejected:hover {
+  opacity: 0.85;
+}
+
+.cc-rejected-reason {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cc-rejected-reason svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.cc-duplicate-link {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.cc-duplicate-link:hover {
+  color: var(--accent);
+}
+
+.cc-duplicate-link svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+/* Authority reject option in status select */
+.status-select option[value="Rejected"] {
+  color: #dc2626;
+}
+
+/* ─── RESPONSIVE: Vote & Reject ─── */
+@media (max-width: 768px) {
+  .vote-bar { gap: 2px; }
+  .vote-btn { padding: 4px 8px; font-size: 0.68rem; min-height: 32px; }
+
+  .detail-vote-bar { gap: 8px; flex-wrap: wrap; }
+  .detail-vote-btn { padding: 8px 12px; font-size: 0.78rem; min-height: 40px; }
+
+  .reject-panel { padding: 12px; }
+  .reject-field select,
+  .reject-field input,
+  .reject-field textarea { min-height: 40px; }
+}

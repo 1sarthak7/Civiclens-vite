@@ -263,6 +263,8 @@ h1, h2, h3, h4 {
 .badge-progress { background: var(--progress-bg); color: var(--progress); border: 1px solid rgba(73, 136, 196, 0.2); }
 .badge-awaiting { background: var(--info-bg); color: var(--info); border: 1px solid rgba(28, 77, 141, 0.2); }
 .badge-resolved { background: var(--success-bg); color: var(--success); border: 1px solid rgba(5, 150, 105, 0.2); }
+.badge-rejected { background: rgba(220, 38, 38, 0.08); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.2); }
+.badge-duplicate { background: rgba(107, 114, 128, 0.08); color: #6b7280; border: 1px solid rgba(107, 114, 128, 0.2); }
 
 /* ─── INPUTS ─── */
 .input-field {
