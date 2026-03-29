@@ -364,8 +364,8 @@ async function handleReject(complaintId) {
     .eq('id', complaintId);
 
   if (error) {
-    showToast('Failed to reject complaint', 'error');
-    console.error(error);
+    console.error('Reject error:', error.message, error.details, error.hint, error);
+    showToast(`Failed to reject: ${error.message}`, 'error');
   } else {
     showToast(`Complaint rejected: ${reason}`, 'success');
     closeDetailModal();
