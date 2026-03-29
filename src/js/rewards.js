@@ -1,11 +1,12 @@
 // ═══════════════════════════════════════════════════════════
-// CIVIC LENS — Rewards Page Logic
+// CIVIC LENS — Rewards Page Logic (v2 — Tier-Based System)
 // ═══════════════════════════════════════════════════════════
 
 import { supabase, getCurrentUser } from './supabase.js';
 import { showToast } from './notifications.js';
 import {
-  SEVERITY_BASE_CREDITS, CATEGORY_MULTIPLIERS, SPEED_TIERS, SEVERITY_OPTIONS
+  SEVERITY_BASE_CREDITS, CATEGORY_MULTIPLIERS, SPEED_TIERS, SEVERITY_OPTIONS,
+  TIER_CONFIG, REDEMPTION_CATALOG, getRewardsByTier
 } from './rewardAlgorithm.js';
 
 // ─── Animated SVG Icons ───
@@ -27,12 +28,15 @@ const SVG_ICONS = {
     <path d="M24 4C24 4 10 20 10 30a14 14 0 0028 0C38 20 24 4 24 4z" class="svg-drop"/>
     <path d="M20 32a6 6 0 004 2" class="svg-shine" opacity="0.6"/>
   </svg>`,
-  gas: `<svg class="reward-svg reward-svg--gas" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="10" y="12" width="20" height="30" rx="4" class="svg-cylinder"/>
-    <ellipse cx="20" cy="12" rx="10" ry="4" class="svg-cap"/>
-    <path d="M30 20h6a2 2 0 012 2v8a2 2 0 01-2 2h-4" class="svg-nozzle"/>
-    <path d="M36 18V10a2 2 0 012-2h2" class="svg-pipe"/>
-    <circle cx="40" cy="6" r="2" class="svg-flame"/>
+  bus: `<svg class="reward-svg reward-svg--bus" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="6" width="32" height="30" rx="4" class="svg-bus-body"/>
+    <line x1="8" y1="18" x2="40" y2="18" class="svg-bus-line"/>
+    <line x1="24" y1="6" x2="24" y2="18" class="svg-bus-divider"/>
+    <circle cx="16" cy="32" r="3" class="svg-bus-wheel svg-bus-wheel--left"/>
+    <circle cx="32" cy="32" r="3" class="svg-bus-wheel svg-bus-wheel--right"/>
+    <rect x="12" y="10" width="8" height="6" rx="1" class="svg-bus-window svg-bus-window--1"/>
+    <rect x="28" y="10" width="8" height="6" rx="1" class="svg-bus-window svg-bus-window--2"/>
+    <line x1="8" y1="38" x2="40" y2="38" class="svg-bus-ground"/>
   </svg>`,
   parking: `<svg class="reward-svg reward-svg--parking" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="8" y="4" width="32" height="40" rx="6" class="svg-sign"/>
@@ -48,7 +52,20 @@ const SVG_ICONS = {
     <rect x="6" y="36" width="36" height="4" rx="1" class="svg-base"/>
     <circle cx="24" cy="10" r="2" class="svg-gem"/>
   </svg>`,
-  // Utility icons
+  sports: `<svg class="reward-svg reward-svg--sports" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="24" cy="24" r="16" class="svg-ball"/>
+    <ellipse cx="24" cy="24" rx="16" ry="8" class="svg-ball-seam svg-ball-seam--h"/>
+    <ellipse cx="24" cy="24" rx="8" ry="16" class="svg-ball-seam svg-ball-seam--v"/>
+    <circle cx="24" cy="24" r="4" class="svg-ball-center"/>
+  </svg>`,
+  exam: `<svg class="reward-svg reward-svg--exam" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="4" width="26" height="36" rx="2" class="svg-paper"/>
+    <line x1="14" y1="12" x2="28" y2="12" class="svg-text-line svg-text-line--1"/>
+    <line x1="14" y1="18" x2="28" y2="18" class="svg-text-line svg-text-line--2"/>
+    <line x1="14" y1="24" x2="24" y2="24" class="svg-text-line svg-text-line--3"/>
+    <path d="M28 28l4 4 8-10" class="svg-checkmark"/>
+    <path d="M34 4v8h8" class="svg-fold"/>
+  </svg>`,
   credit: `<svg class="reward-svg reward-svg--credit" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="24" cy="24" r="18" class="svg-coin"/>
     <circle cx="24" cy="24" r="14" class="svg-coin-inner" opacity="0.3"/>
@@ -76,54 +93,9 @@ const SVG_ICONS = {
   </svg>`,
 };
 
-// ─── Reward Catalog ───
-const REWARDS = [
-  {
-    id: 'metro',
-    icon: SVG_ICONS.metro,
-    name: 'Metro Discount',
-    desc: '₹50 off your next metro recharge. Valid at any metro station counter.',
-    cost: 100,
-  },
-  {
-    id: 'electricity',
-    icon: SVG_ICONS.electricity,
-    name: 'Electricity Bill Discount',
-    desc: '₹100 off your next electricity bill payment via the official portal.',
-    cost: 200,
-  },
-  {
-    id: 'water',
-    icon: SVG_ICONS.water,
-    name: 'Water Bill Discount',
-    desc: '₹75 off your next water utility bill. Apply at municipal office.',
-    cost: 150,
-  },
-  {
-    id: 'gas',
-    icon: SVG_ICONS.gas,
-    name: 'Gas Cylinder Discount',
-    desc: '₹125 off your next gas cylinder booking through authorized dealers.',
-    cost: 250,
-  },
-  {
-    id: 'parking',
-    icon: SVG_ICONS.parking,
-    name: 'Free Parking Pass',
-    desc: 'One-day free municipal parking pass. Valid at any city parking zone.',
-    cost: 75,
-  },
-  {
-    id: 'museum',
-    icon: SVG_ICONS.museum,
-    name: 'Museum Entry Pass',
-    desc: 'Free entry to any government museum in your city for one visit.',
-    cost: 50,
-  },
-];
-
 let currentUser = null;
 let userCredits = 0;
+let activeTier = 'A';
 
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', async () => {
@@ -136,31 +108,123 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupUserInfo();
 
   if (currentUser.role === 'authority') {
-    // Admin view
     document.getElementById('citizen-rewards-view')?.classList.add('hidden');
     document.getElementById('admin-rewards-view')?.classList.remove('hidden');
     await loadAdminView();
   } else {
-    // Citizen view
     document.getElementById('citizen-rewards-view')?.classList.remove('hidden');
     document.getElementById('admin-rewards-view')?.classList.add('hidden');
     await loadCredits();
-    renderRewards();
+    setupTierTabs();
+    renderAllTiers();
     await loadHistory();
     setupModal();
   }
 });
 
+// ═══ TIER TABS ═══
+
+function setupTierTabs() {
+  const tabs = document.querySelectorAll('.tier-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tier = tab.dataset.tier;
+      if (tier === activeTier) return;
+
+      // Update tab active state
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Animate panel switch
+      const currentPanel = document.getElementById(`tier-panel-${activeTier}`);
+      const nextPanel = document.getElementById(`tier-panel-${tier}`);
+
+      if (currentPanel) {
+        currentPanel.classList.remove('active');
+        currentPanel.classList.add('exiting');
+        setTimeout(() => currentPanel.classList.remove('exiting'), 400);
+      }
+
+      if (nextPanel) {
+        nextPanel.classList.add('entering');
+        requestAnimationFrame(() => {
+          nextPanel.classList.add('active');
+          nextPanel.classList.remove('entering');
+        });
+      }
+
+      activeTier = tier;
+    });
+  });
+}
+
+// ═══ RENDER REWARD CARDS ═══
+
+function renderAllTiers() {
+  ['A', 'B', 'C'].forEach(tier => {
+    renderTierRewards(tier);
+  });
+}
+
+function renderTierRewards(tierKey) {
+  const grid = document.getElementById(`rewards-grid-${tierKey}`);
+  if (!grid) return;
+
+  const tierConfig = TIER_CONFIG[tierKey];
+  const rewards = getRewardsByTier(tierKey);
+
+  grid.innerHTML = rewards.map(reward => {
+    const icon = SVG_ICONS[reward.iconKey] || SVG_ICONS.gift;
+    const canAfford = userCredits >= reward.cost;
+    const progress = Math.min(100, Math.round((userCredits / reward.cost) * 100));
+
+    return `
+      <div class="reward-card reward-card--tier-${tierKey}" data-reward-id="${reward.id}">
+        <div class="reward-card-tier-strip" style="background: linear-gradient(135deg, ${tierConfig.gradient[0]}, ${tierConfig.gradient[1]})"></div>
+        <div class="reward-card-body">
+          <div class="reward-card-top">
+            <div class="reward-card-icon">${icon}</div>
+            <span class="reward-tier-badge" style="background: ${tierConfig.badgeColor}15; color: ${tierConfig.badgeColor}; border: 1px solid ${tierConfig.badgeColor}30;">
+              Tier ${tierKey}
+            </span>
+          </div>
+          <div class="reward-card-name">${reward.name}</div>
+          <div class="reward-card-benefit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="${tierConfig.accentColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            ${reward.benefit}
+          </div>
+          <div class="reward-card-desc">${reward.desc}</div>
+          <div class="reward-card-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress}%; background: linear-gradient(90deg, ${tierConfig.gradient[0]}, ${tierConfig.gradient[1]})"></div>
+            </div>
+            <span class="progress-text">${canAfford ? '✓ Affordable' : `${userCredits}/${reward.cost} credits`}</span>
+          </div>
+          <div class="reward-card-footer">
+            <div class="reward-cost" style="color: ${tierConfig.accentColor}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+              ${reward.cost} credits
+            </div>
+            <button class="redeem-btn redeem-btn--tier-${tierKey}" data-id="${reward.id}" ${!canAfford ? 'disabled' : ''}>
+              ${canAfford ? 'Redeem' : 'Not Enough'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Attach click handlers
+  grid.querySelectorAll('.redeem-btn:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', () => handleRedeem(btn.dataset.id));
+  });
+}
 
 // ═══ ADMIN VIEW ═══
 
 async function loadAdminView() {
-  // Load users
   await loadAllUsers();
 }
-
-
-
 
 async function loadAllUsers() {
   const loadingEl = document.getElementById('admin-users-loading');
@@ -212,7 +276,6 @@ async function loadAllUsers() {
     `;
   }).join('');
 
-  // Attach save handlers
   bodyEl.querySelectorAll('.admin-save-credits-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const userId = btn.dataset.userId;
@@ -231,7 +294,6 @@ async function loadAllUsers() {
         .eq('id', userId);
 
       if (error) {
-        // Try RPC as fallback
         const { error: rpcErr } = await supabase.rpc('award_credits', {
           target_user_id: userId,
           credit_amount: newCredits - (parseInt(input.defaultValue, 10) || 0),
@@ -274,14 +336,12 @@ async function loadCredits() {
     userCredits = data.credits || 0;
   }
 
-  // Count resolved complaints for this user
   const { count } = await supabase
     .from('complaints')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', currentUser.id)
     .eq('status', 'Resolved');
 
-  // Sum total redeemed
   const { data: redemptions } = await supabase
     .from('redemptions')
     .select('reward_cost')
@@ -290,7 +350,6 @@ async function loadCredits() {
   const totalRedeemed = redemptions ? redemptions.reduce((sum, r) => sum + r.reward_cost, 0) : 0;
   const totalEarned = userCredits + totalRedeemed;
 
-  // Update UI
   animateCounter('credit-balance', userCredits);
   animateCounter('total-earned', totalEarned);
   animateCounter('total-redeemed', totalRedeemed);
@@ -318,39 +377,9 @@ function animateCounter(elementId, target) {
   }, stepTime);
 }
 
-// ─── Render Reward Cards ───
-function renderRewards() {
-  const grid = document.getElementById('rewards-grid');
-  if (!grid) return;
-
-  grid.innerHTML = REWARDS.map(reward => `
-    <div class="reward-card" data-reward-id="${reward.id}">
-      <div class="reward-card-icon">${reward.icon}</div>
-      <div class="reward-card-name">${reward.name}</div>
-      <div class="reward-card-desc">${reward.desc}</div>
-      <div class="reward-card-footer">
-        <div class="reward-cost">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-          ${reward.cost} credits
-        </div>
-        <button class="redeem-btn" data-id="${reward.id}" ${userCredits < reward.cost ? 'disabled' : ''}>
-          ${userCredits < reward.cost ? 'Not Enough' : 'Redeem'}
-        </button>
-      </div>
-    </div>
-  `).join('');
-
-  // Attach click handlers
-  grid.querySelectorAll('.redeem-btn:not([disabled])').forEach(btn => {
-    btn.addEventListener('click', () => handleRedeem(btn.dataset.id));
-  });
-}
-
-// ─── How Credits Work (Citizen Explainer) ───
-
 // ─── Handle Redemption ───
 async function handleRedeem(rewardId) {
-  const reward = REWARDS.find(r => r.id === rewardId);
+  const reward = REDEMPTION_CATALOG.find(r => r.id === rewardId);
   if (!reward) return;
 
   if (userCredits < reward.cost) {
@@ -358,11 +387,9 @@ async function handleRedeem(rewardId) {
     return;
   }
 
-  // Generate coupon code
-  const couponCode = generateCoupon(reward.id);
+  const couponCode = generateCoupon(reward);
 
   try {
-    // Deduct credits
     const newCredits = userCredits - reward.cost;
     const { error: creditError } = await supabase
       .from('profiles')
@@ -371,7 +398,6 @@ async function handleRedeem(rewardId) {
 
     if (creditError) throw creditError;
 
-    // Record redemption
     const { error: redeemError } = await supabase
       .from('redemptions')
       .insert({
@@ -379,19 +405,17 @@ async function handleRedeem(rewardId) {
         reward_name: reward.name,
         reward_cost: reward.cost,
         coupon_code: couponCode,
+        reward_tier: reward.tier,
       });
 
     if (redeemError) throw redeemError;
 
-    // Update local state
     userCredits = newCredits;
 
-    // Show success modal
     showRedeemModal(reward, couponCode);
 
-    // Refresh UI
     document.getElementById('credit-balance').textContent = userCredits;
-    renderRewards();
+    renderAllTiers();
     await loadHistory();
     await loadCredits();
 
@@ -402,10 +426,11 @@ async function handleRedeem(rewardId) {
 }
 
 // ─── Generate Coupon Code ───
-function generateCoupon(rewardId) {
-  const prefix = rewardId.toUpperCase().substring(0, 3);
+function generateCoupon(reward) {
+  const tierPrefix = reward.tier;
+  const rewardPrefix = reward.id.toUpperCase().substring(0, 3);
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `CL-${prefix}-${random}`;
+  return `CL-${tierPrefix}-${rewardPrefix}-${random}`;
 }
 
 // ─── Load Redemption History ───
@@ -436,8 +461,15 @@ async function loadHistory() {
       year: 'numeric',
     });
 
+    const tier = r.reward_tier || '–';
+    const tierConfig = TIER_CONFIG[tier];
+    const badgeStyle = tierConfig
+      ? `background: ${tierConfig.badgeColor}15; color: ${tierConfig.badgeColor}; border: 1px solid ${tierConfig.badgeColor}30;`
+      : 'background: rgba(107,114,128,0.1); color: #6b7280;';
+
     return `
       <tr>
+        <td><span class="history-tier-badge" style="${badgeStyle}">Tier ${tier}</span></td>
         <td>${r.reward_name}</td>
         <td>-${r.reward_cost}</td>
         <td class="coupon-cell">${r.coupon_code}</td>
@@ -461,8 +493,19 @@ function setupModal() {
 }
 
 function showRedeemModal(reward, couponCode) {
+  const tierConfig = TIER_CONFIG[reward.tier];
+  const icon = SVG_ICONS[reward.iconKey] || SVG_ICONS.gift;
+
   const modalNameEl = document.getElementById('modal-reward-name');
-  modalNameEl.innerHTML = `<span class="modal-reward-icon">${reward.icon}</span> ${reward.name}`;
+  modalNameEl.innerHTML = `<span class="modal-reward-icon">${icon}</span> ${reward.name}`;
+
+  const tierBadgeEl = document.getElementById('modal-tier-badge');
+  if (tierBadgeEl) {
+    tierBadgeEl.innerHTML = `<span class="reward-tier-badge" style="background: ${tierConfig.badgeColor}15; color: ${tierConfig.badgeColor}; border: 1px solid ${tierConfig.badgeColor}30;">
+      ${tierConfig.icon} Tier ${reward.tier} — ${tierConfig.name}
+    </span>`;
+  }
+
   document.getElementById('modal-coupon-code').textContent = couponCode;
   document.getElementById('redeem-modal')?.classList.remove('hidden');
 }

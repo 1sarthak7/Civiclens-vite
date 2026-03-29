@@ -1,19 +1,19 @@
 // ─────────────────────────────────────────────────────────────
-//  Government Complaint Reward Algorithm
+//  Government Complaint Reward Algorithm  (v2 — Reduced Earning)
 //  Stack: Node.js / JavaScript
 // ─────────────────────────────────────────────────────────────
 
 // ── 1. CONFIG ────────────────────────────────────────────────
+// Base credits REDUCED to make earning harder (~20-40 avg per complaint)
 
 const SEVERITY_BASE_CREDITS = {
-  low:      10,
-  medium:   30,
-  high:     60,
-  critical: 120,
+  low:      5,
+  medium:   15,
+  high:     30,
+  critical: 60,
 };
 
 // Multipliers per complaint category.
-// Add / adjust categories to match your app's taxonomy.
 const CATEGORY_MULTIPLIERS = {
   roads_potholes:   1.0,
   electricity:      1.1,
@@ -27,7 +27,6 @@ const CATEGORY_MULTIPLIERS = {
 };
 
 // Speed bonus based on how fast the complaint was resolved.
-// resolutionHours = time from complaint filed → marked resolved.
 function getSpeedMultiplier(resolutionHours) {
   if (resolutionHours <= 24)   return 1.5;  // resolved within 1 day
   if (resolutionHours <= 168)  return 1.2;  // resolved within 7 days
@@ -35,27 +34,15 @@ function getSpeedMultiplier(resolutionHours) {
   return 0.8;                               // took longer than 30 days
 }
 
-// Global caps to prevent abuse / reward runaway.
-const MIN_CREDITS = 5;
-const MAX_CREDITS = 300;
+// Global caps
+const MIN_CREDITS = 3;
+const MAX_CREDITS = 150;
 
 // ── 2. CORE FUNCTION ─────────────────────────────────────────
 
-/**
- * Calculate reward credits for a resolved complaint.
- *
- * @param {Object} complaint
- * @param {string} complaint.severity         - 'low' | 'medium' | 'high' | 'critical'
- * @param {string} complaint.category         - one of the keys in CATEGORY_MULTIPLIERS
- * @param {Date}   complaint.filedAt          - when the complaint was submitted
- * @param {Date}   complaint.resolvedAt       - when the complaint was marked resolved
- *
- * @returns {Object} { credits, breakdown }
- */
 function calculateReward(complaint) {
   const { severity, category, filedAt, resolvedAt } = complaint;
 
-  // ── Validate inputs ──────────────────────────────────────
   if (!SEVERITY_BASE_CREDITS[severity]) {
     throw new Error(`Unknown severity: "${severity}". Valid: ${Object.keys(SEVERITY_BASE_CREDITS).join(', ')}`);
   }
@@ -65,13 +52,11 @@ function calculateReward(complaint) {
     console.warn(`Unknown category "${category}", defaulting to "other".`);
   }
 
-  // ── Compute each factor ──────────────────────────────────
   const baseCredits      = SEVERITY_BASE_CREDITS[severity];
   const categoryMult     = CATEGORY_MULTIPLIERS[categoryKey] ?? CATEGORY_MULTIPLIERS['other'];
   const resolutionHours  = (resolvedAt - filedAt) / (1000 * 60 * 60);
   const speedMult        = getSpeedMultiplier(resolutionHours);
 
-  // ── Apply formula ────────────────────────────────────────
   const raw     = baseCredits * categoryMult * speedMult;
   const credits = Math.min(MAX_CREDITS, Math.max(MIN_CREDITS, Math.round(raw)));
 
@@ -88,41 +73,7 @@ function calculateReward(complaint) {
   };
 }
 
-// ── 3. USAGE IN YOUR ROUTE / SERVICE ─────────────────────────
-//
-// Call this when your backend marks a complaint as "resolved".
-// Example (Express route):
-//
-//   app.post('/complaints/:id/resolve', async (req, res) => {
-//     const complaint = await Complaint.findById(req.params.id);
-//     complaint.status     = 'resolved';
-//     complaint.resolvedAt = new Date();
-//     await complaint.save();
-//
-//     const { credits, breakdown } = calculateReward({
-//       severity:   complaint.severity,
-//       category:   complaint.category,
-//       filedAt:    complaint.createdAt,
-//       resolvedAt: complaint.resolvedAt,
-//     });
-//
-//     await User.findByIdAndUpdate(complaint.userId, {
-//       $inc: { totalCredits: credits }
-//     });
-//
-//     await CreditTransaction.create({
-//       userId:      complaint.userId,
-//       complaintId: complaint._id,
-//       credits,
-//       breakdown,
-//       type: 'complaint_resolved',
-//     });
-//
-//     res.json({ message: 'Complaint resolved', creditsAwarded: credits, breakdown });
-//   });
-
-
-// ── 4. DEMO / SMOKE TEST ─────────────────────────────────────
+// ── 3. DEMO / SMOKE TEST ─────────────────────────────────────
 
 function hoursAgo(n) {
   return new Date(Date.now() - n * 60 * 60 * 1000);
@@ -159,7 +110,7 @@ const testCases = [
   },
 ];
 
-console.log('=== Complaint Reward Algorithm — Demo ===\n');
+console.log('=== Complaint Reward Algorithm v2 — Reduced Earning Demo ===\n');
 testCases.forEach(({ label, complaint }) => {
   const { credits, breakdown } = calculateReward(complaint);
   console.log(`📋 ${label}`);
