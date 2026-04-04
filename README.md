@@ -22,7 +22,7 @@
 
 ## Overview
 
-CivicLens is a specialized civic issue reporting and tracking application designed to bridge the accountability gap between citizens and local authorities. By providing exact GPS coordinates, photographic evidence, and an interactive public dashboard, CivicLens transforms opaque complaint registries into a transparent, citizen-verified resolution environment.
+CivicLens is a specialized civic issue reporting and tracking application designed to bridge the accountability gap between citizens and local authorities. By providing exact GPS coordinates, photographic evidence, and an interactive public dashboard, CivicLens transforms opaque complaint registries into a transparent, citizen verified resolution environment, Made for Our India and Our citizens .
 
 ---
 
