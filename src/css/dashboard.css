@@ -938,18 +938,18 @@
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
-  /* Stack map on top, sidebar below — shrink map to 30vh */
+  /* Stack map on top, sidebar below — give map more space */
   .dashboard-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 30vh 1fr;
+    grid-template-rows: 55vh 1fr;
     height: 100dvh;
     height: 100vh; /* fallback */
   }
 
   .map-area {
     order: 1;
-    height: 30vh;
-    min-height: 160px;
+    height: 55vh;
+    min-height: 300px;
   }
 
   /* Sidebar: scrollable, takes remaining 70vh */
