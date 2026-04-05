@@ -1,0 +1,409 @@
+/* ═══════════════════════════════════════════════════════════
+   CIVIC LENS — Mobile WebView Optimizations
+   Applied when site is loaded inside the CivicLens Android app
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── GLOBAL MOBILE OVERRIDES ─── */
+@media (max-width: 768px) {
+
+  /* Prevent any horizontal scroll */
+  html,
+  body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide desktop-only top bar in-app */
+  .top-bar {
+    display: none !important;
+  }
+
+  /* ─── TOUCH-FRIENDLY TARGETS ─── */
+  .btn,
+  button,
+  a.nav-link,
+  .btn-outline-nav,
+  .btn-primary-nav,
+  .btn-hero-primary,
+  .btn-hero-secondary,
+  .carousel-btn,
+  .report-link,
+  .nav-auth-buttons a {
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: rgba(26, 60, 110, 0.15);
+  }
+
+  /* ─── FORM INPUT OPTIMIZATION ─── */
+  /* Prevents iOS auto-zoom on input focus */
+  input,
+  select,
+  textarea,
+  .input-field {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 8px;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus,
+  .input-field:focus {
+    outline: none;
+    font-size: 16px !important;
+  }
+
+  /* ─── HERO SECTION ─── */
+  .hero-banner {
+    padding: 60px 5% 80px;
+    min-height: 360px;
+  }
+
+  .hero-banner h1 {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .hero-banner p {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-actions .btn-hero-primary,
+  .hero-actions .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 0.9rem;
+  }
+
+  /* ─── STATISTICS GRID ─── */
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 20px 16px;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
+  .stat-title {
+    font-size: 0.72rem;
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 10px;
+  }
+
+  /* ─── ABOUT SECTION ─── */
+  .about-section {
+    padding: 48px 5%;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
+  .about-image {
+    max-height: 240px;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-it-works-section {
+    padding: 48px 5%;
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px;
+  }
+
+  .step-card {
+    padding: 24px 16px;
+  }
+
+  .step-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .step-card p {
+    font-size: 0.78rem;
+  }
+
+  .step-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 14px;
+  }
+
+  .step-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* ─── CAROUSEL / SNAPSHOTS ─── */
+  .snapshots-section {
+    padding: 48px 0 40px;
+  }
+
+  .carousel-slide {
+    width: 260px;
+  }
+
+  .carousel-slide-inner {
+    height: 340px;
+  }
+
+  .snapshots-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .snapshots-nav {
+    align-self: flex-start;
+  }
+
+  /* ─── NEWS SECTION ─── */
+  .news-section {
+    padding: 48px 5%;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  .news-card-featured {
+    grid-column: span 1;
+  }
+
+  .news-sidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* ─── REPORTS ─── */
+  .reports-section {
+    padding: 48px 5%;
+  }
+
+  .reports-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  /* ─── FEATURES ─── */
+  .features-section {
+    padding: 48px 5%;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px;
+  }
+
+  .feature-card-new {
+    padding: 20px 16px;
+  }
+
+  .feature-card-new h3 {
+    font-size: 0.9rem;
+  }
+
+  .feature-card-new p {
+    font-size: 0.78rem;
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    padding: 48px 5%;
+  }
+
+  .cta-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cta-buttons .btn-hero-primary,
+  .cta-buttons .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px;
+  }
+
+  .footer-about {
+    grid-column: span 2;
+  }
+
+  .footer-bottom-inner {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer-bottom-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+  .section-header h2 {
+    font-size: 1.6rem;
+  }
+
+  /* ─── NAVBAR MOBILE ─── */
+  .navbar {
+    padding: 0 4%;
+  }
+
+  .navbar-emblem {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.6rem;
+  }
+
+  /* ─── DASHBOARD MAP — LARGER ON MOBILE ─── */
+  .dashboard-layout {
+    grid-template-rows: 55vh 1fr !important;
+  }
+
+  .map-area {
+    height: 55vh !important;
+    min-height: 300px !important;
+  }
+
+  #map {
+    height: 100% !important;
+    min-height: 300px !important;
+  }
+
+  /* Keep map controls accessible */
+  .map-controls {
+    top: 10px;
+    right: 10px;
+  }
+
+  .map-btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+
+  /* Report form on mobile */
+  .report-overlay {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+    padding: 16px;
+  }
+
+  /* ─── SMOOTH SCROLLING IMPROVEMENTS ─── */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Remove hover effects on touch devices */
+  @media (hover: none) {
+    .stat-card:hover,
+    .step-card:hover,
+    .feature-card-new:hover,
+    .card-glass:hover {
+      transform: none;
+      box-shadow: inherit;
+    }
+  }
+}
+
+/* ─── EXTRA SMALL DEVICES ─── */
+@media (max-width: 480px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 16px 12px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .footer-about {
+    grid-column: span 1;
+  }
+
+  .carousel-slide {
+    width: 240px;
+  }
+
+  .carousel-slide-inner {
+    height: 300px;
+  }
+
+  .hero-banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-badge {
+    font-size: 0.68rem;
+    padding: 4px 12px;
+  }
+
+  /* Auth page mobile fixes */
+  .auth-container {
+    padding: 20px 16px;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+}
