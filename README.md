@@ -87,12 +87,6 @@ The proprietary gamification engine calculates citizen rewards based on three pr
 
 ---
 
-## Deployment
-
-The application is fully operational and continuously deployed via GitHub Pages. Advanced routing and module bundling is handled natively by Vite, ensuring rapid, caching-enabled asset delivery in production.
-
----
-
 Copyright 2026 CivicLens. Created by Sarthak and Team.
 
 </div>
