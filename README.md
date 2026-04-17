@@ -70,21 +70,6 @@ npm install
 npm run dev
 ```
 
-</details>
-
-<details>
-<summary><strong>View Gamification Architecture</strong></summary>
-
-<br/>
-
-The proprietary gamification engine calculates citizen rewards based on three primary factors:
-
-* **Severity Base Constraint:** Ranging from 5 credits for minor inconveniences to 100 credits for critical safety risks.
-* **Category Multiplier:** Priority issues such as road infrastructure and sanitation receive elevated multipliers.
-* **Speed Bonus:** Accelerated authority resolutions generate bonus multipliers, incentivizing both rapid reporting and efficient closure.
-
-</details>
-
 ---
 
 Copyright 2026 CivicLens. Created by Sarthak and Team.
